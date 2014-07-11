@@ -1,0 +1,191 @@
+<NumPad>:
+    BoxLayout:
+        size: root.size
+        pos: root.pos
+        orientation: 'vertical'
+        padding: 10
+        Label:
+            size_hint_y: .2
+            text: root.display_text + root.units if root.units != None else root.display_text
+            color: (0., 0., 0., 1.)
+            text_size: self.size
+            halign: 'right'
+            font_size: self.height * .75
+        GridLayout:
+            cols:3
+            size_hint_y: .8
+            padding: 5
+            spacing: 5
+            FlatButton:
+                text: "7"
+                size_hint: (.33,.25)
+                on_release: root.button_callback("7")
+                font_size: self.height * .4
+                color: (43./255., 153./255., 1.0)
+            FlatButton:
+                text: "8"
+                size_hint: (.33,.25)
+                on_release: root.button_callback("8")
+                font_size: self.height * .4
+                color: (43./255., 153./255., 1.0)
+            FlatButton:
+                text: "9"
+                size_hint: (.33,.25)
+                on_release: root.button_callback("9")
+                font_size: self.height * .4
+                color: (43./255., 153./255., 1.0)
+            FlatButton:
+                text: "4"
+                size_hint: (.33,.25)
+                on_release: root.button_callback("4")
+                font_size: self.height * .4
+                color: (43./255., 153./255., 1.0)
+            FlatButton:
+                text: "5"
+                size_hint: (.33,.25)
+                on_release: root.button_callback("5")
+                font_size: self.height * .4
+                color: (43./255., 153./255., 1.0)
+            FlatButton:
+                text: "6"
+                size_hint: (.33,.25)
+                on_release: root.button_callback("6")
+                font_size: self.height * .4
+                color: (43./255., 153./255., 1.0)
+            FlatButton:
+                text: "1"
+                size_hint: (.33,.25)
+                on_release: root.button_callback("1")
+                font_size: self.height * .4
+                color: (43./255., 153./255., 1.0)
+            FlatButton:
+                text: "2"
+                size_hint: (.33,.25)
+                on_release: root.button_callback("2")
+                font_size: self.height * .4
+                color: (43./255., 153./255., 1.0)
+            FlatButton:
+                text: "3"
+                size_hint: (.33,.25)
+                on_release: root.button_callback("3")
+                font_size: self.height * .4
+                color: (43./255., 153./255., 1.0)
+            FlatButton:
+                text: "del"
+                size_hint: (.33,.25)
+                on_release: root.button_callback("del")
+                font_size: self.height * .4
+                color: (43./255., 153./255., 1.0)
+            FlatButton:
+                text: "0"
+                size_hint: (.33,.25)
+                on_release: root.button_callback("0")
+                font_size: self.height * .4
+                color: (43./255., 153./255., 1.0)
+            FlatButton:
+                text: "enter"
+                size_hint: (.33,.25)
+                on_release: root.button_callback("ret")
+                font_size: self.height * .4
+                color: (6./255., 114./255., 0.)
+
+
+<-DecimalNumPad>:
+    BoxLayout:
+        size: root.size
+        pos: root.pos
+        orientation: 'vertical'
+        padding: 10
+        Label:
+            size_hint_y: .2
+            text: root.display_text + root.units if root.units != None else root.display_text
+            text_size: self.size
+            halign: 'right'
+            font_size: self.height * .75
+        GridLayout:
+            cols:3
+            size_hint_y: .8
+            padding: 5
+            spacing: 5
+            FlatButton:
+                color: (43./255., 153./255., 1.0)
+                text: "7"
+                size_hint: (.33,.20)
+                on_release: root.button_callback("7")
+                font_size: self.height * .4
+            FlatButton:
+                color: (43./255., 153./255., 1.0)
+                text: "8"
+                size_hint: (.33,.20)
+                on_release: root.button_callback("8")
+                font_size: self.height * .4
+            FlatButton:
+                color: (43./255., 153./255., 1.0)
+                text: "9"
+                size_hint: (.33,.20)
+                on_release: root.button_callback("9")
+                font_size: self.height * .4
+            FlatButton:
+                color: (43./255., 153./255., 1.0)
+                text: "4"
+                size_hint: (.33,.20)
+                on_release: root.button_callback("4")
+                font_size: self.height * .4
+            FlatButton:
+                color: (43./255., 153./255., 1.0)
+                text: "5"
+                size_hint: (.33,.20)
+                on_release: root.button_callback("5")
+                font_size: self.height * .4
+            FlatButton:
+                color: (43./255., 153./255., 1.0)
+                text: "6"
+                size_hint: (.33,.20)
+                on_release: root.button_callback("6")
+                font_size: self.height * .4
+            FlatButton:
+                color: (43./255., 153./255., 1.0)
+                text: "1"
+                size_hint: (.33,.20)
+                on_release: root.button_callback("1")
+                font_size: self.height * .4
+            FlatButton:
+                color: (43./255., 153./255., 1.0)
+                text: "2"
+                size_hint: (.33,.20)
+                on_release: root.button_callback("2")
+                font_size: self.height * .4
+            FlatButton:
+                color: (43./255., 153./255., 1.0)
+                text: "3"
+                size_hint: (.33,.20)
+                on_release: root.button_callback("3")
+                font_size: self.height * .4
+            FlatButton:
+                color: (43./255., 153./255., 1.0)
+                text: "del"
+                size_hint: (.33,.20)
+                on_release: root.button_callback("del")
+                font_size: self.height * .4
+            FlatButton:
+                color: (43./255., 153./255., 1.0)
+                text: "0"
+                size_hint: (.33,.20)
+                on_release: root.button_callback("0")
+                font_size: self.height * .4
+            FlatButton:
+                color: (43./255., 153./255., 1.0)
+                text: '.'
+                size_hint: (.33, .20)
+                on_release: root.button_callback(".")
+                font_size: self.height * .4
+            Widget:
+                size_hint: (.33, .20)
+            Widget:
+                size_hint: (.33, .20)
+            FlatButton:
+                color: (43./255., 153./255., 1.0)
+                text: "enter"
+                size_hint: (.33,.20)
+                on_release: root.button_callback("ret")
+                font_size: self.height * .4

@@ -1,0 +1,260 @@
+<TextInputFocus>:
+    text: texti.text
+    texti: texti
+    orientation: 'tb-lr'
+    padding: 15
+    spacing: 15
+    FlatTextInput:
+        id: texti
+        height: 50
+        size_hint: (1.0, None)
+    FlatButton:
+        text: 'Submit'
+        on_release: root.close_callback()
+        size_hint: (1.0, .1)
+        color: (43./255., 153./255., 1.0)
+
+
+<-FlatTextInput@TextInput>:
+    canvas.before:
+        Color:
+            rgba: self.background_color
+        Rectangle:
+            size: self.size
+            pos: self.pos
+        Color:
+            rgba: 0., 0., 0., 1.
+        Rectangle:
+            size: (self.size[0], sp(2))
+            pos: self.pos[0], self.cursor_pos[1] - self.line_height - sp(2)
+        Color:
+            rgba: (self.cursor_color if self.focus and not self.cursor_blink else (0, 0, 0, 0))
+        Rectangle:
+            pos: [int(x) for x in self.cursor_pos]
+            size: sp(2), -self.line_height
+        Color:
+            rgba: self.disabled_foreground_color if self.disabled else (self.hint_text_color if not self.text and not self.focus else self.foreground_color)
+
+
+
+<FlatLabel>:
+    font_size: '20dp'
+    disabled_color: (.8, .8, .8, 1.0)
+    color: app.get_color(root.color_name)
+
+
+<FlatScrollView>:
+    scroll_timeout: 75
+    scroll_distance: 10
+    effect_cls: ScrollEffect
+
+
+<FlatButton>:
+    color: app.get_color(self.color_name) 
+    canvas.before:
+        Color:
+            rgb: root.color_down if root.state == 'down' or root.disabled else root.color
+        Rectangle:
+            size: self.size
+            pos: self.pos
+    canvas.after:
+        StencilPush:
+        Rectangle:
+            size: self.size
+            pos: self.pos
+        StencilUse:
+        Color:
+            rgba: self.touch_color
+        Ellipse:
+            size: self.touch_rad, self.touch_rad
+            pos: self.touch_pos[0] - self.touch_rad/2., self.touch_pos[1] - self.touch_rad/2.
+        StencilUnUse:
+        StencilPop:
+
+    FlatLabel:
+        size_hint: (None, 1.0)
+        pos_hint: {'x': .5}
+        color_name: root.font_color_name
+        width: self.texture_size[0]
+        text: root.text
+        valign: 'middle'
+        halign: 'center'
+        font_size: '14dp'
+
+
+
+<FlatIcon>:
+    text: app.get_icon(self.icon)
+    valign: 'middle'
+    font_name: 'data/font/fontawesome-webfont.ttf'
+    halign: 'right'
+    color: app.get_color(root.color_name)
+    font_size: '64dp'
+
+
+
+<FlatIconButton>:
+    color: app.get_color(self.color_name) 
+    canvas.before:
+        Color:
+            rgb: root.color_down if root.state == 'down' or root.disabled else root.color
+        Rectangle:
+            size: self.size
+            pos: self.pos
+    StackLayout:
+        orientation: 'lr-tb'
+        size_hint: (1.0, 1.0)
+        spacing: '5dp'
+        id: label_space
+        FlatIcon:
+            size_hint: (.5, 1.0)
+            icon: root.icon
+            color_name: root.icon_color_name
+        FlatLabel:
+            size_hint: (None, 1.0)
+            pos_hint: {'x': .5}
+            width: self.texture_size[0]
+            text: root.text
+            color_name: root.font_color_name
+            valign: 'middle'
+            halign: 'center'
+            font_size: '14dp'
+
+
+<FlatToggleButton>:
+    color: app.get_color(self.color_name) 
+    canvas.before:
+        Color:
+            rgb: root.color if root.state == 'normal' else root.color_down
+        Rectangle:
+            size: self.size
+            pos: self.pos
+    FlatLabel:
+        size_hint: (None, 1.0)
+        pos_hint: {'x': .5}
+        width: self.texture_size[0]
+        color_name: root.font_color_name
+        text: root.text
+        valign: 'middle'
+        halign: 'center'
+        font_size: '20dp'
+
+
+
+<OptionContent>:
+    orientation: 'tb-lr'
+    size_hint: (1.0, 1.0)
+    cols: 1
+    padding: 5
+    spacing: 5
+    FlatLabel:
+        text_size: self.size
+        size_hint: (1.0, .8)
+        font_size: '14sp'
+        valign: 'top'
+        text: root.option_text
+
+<ErrorContent>:
+    orientation: 'tb-lr'
+    size_hint: (1.0, 1.0)
+    dismiss_button: dismiss_button
+    cols: 1
+    padding: 5
+    spacing: 5
+    FlatLabel:
+        text_size: self.size
+        size_hint: (1.0, .8)
+        font_size: '14sp'
+        valign: 'top'
+        text: root.error_text
+    Button:
+        id: dismiss_button
+        text: 'Ok'
+        size_hint: (1.0, .2)
+
+
+<-FlatPopup>:
+    _container: container
+    title_color: (0., 0., 0., 1.)
+    canvas.before:
+        Color:
+            rgba: root.background_color[:3] + [root.background_color[-1] * self._anim_alpha]
+        Rectangle:
+            size: self._window.size if self._window else (0, 0)
+        Color:
+            rgba: root.popup_color
+        Rectangle:
+            size: self.size
+            pos: self.pos
+
+    GridLayout:
+        padding: 12
+        cols: 1
+        size_hint: None, None
+        pos: root.pos
+        size: root.size
+
+        Label:
+            text: root.title
+            color: root.title_color
+            size_hint_y: None
+            height: self.texture_size[1] + 16
+            text_size: self.width - 16, None
+            font_size: root.title_size
+
+        Widget:
+            size_hint_y: None
+            height: 4
+            canvas:
+                Color:
+                    rgba: root.separator_color
+                Rectangle:
+                    pos: self.x, self.y + root.separator_height / 2.
+                    size: self.width, root.separator_height
+
+        BoxLayout:
+            id: container
+
+
+<-FlatCheckBox>:
+    canvas.before:
+        Color:
+            rgba: app.get_color(self.outline_color_name)
+        Rectangle:
+            size: self.size
+            pos: self.pos
+        Color:
+            rgba: app.get_color(self.color_name)
+        Rectangle:
+            size: self.size[0] - sp(self.outline_size), self.size[1] - sp(self.outline_size)
+            pos: self.pos[0] + sp(self.outline_size/2.), self.pos[1] + sp(self.outline_size/2.)
+        
+
+<Check>:
+    icon: 'fa-check'
+    halign: 'center'
+    font_size: (self.size[0] + self.size[1]/2.)*self.scale
+
+
+
+<CheckBoxListItem>:
+    orientation: 'horizontal'
+    size_hint: (1.0, None)
+    height: label.height
+    active: checkbox.active
+    FlatLabel:
+        id: label
+        text: root.answer_text
+        size_hint: (.8, None)
+        color: (0., 0., 0., 1.)
+        font_size: '18dp'
+        text_size: (root.size[0]*.8, None)
+        height: self.texture_size[1]
+    FlatCheckBox:
+        group: root.group
+        id: checkbox
+        size_hint: (.2, 1.0)
+        outline_color_name: root.outline_color_name
+        outline_size: root.outline_size
+        check_color_name: root.check_color_name
+        color_name: root.checkbox_color_name
