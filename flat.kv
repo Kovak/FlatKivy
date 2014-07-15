@@ -1,25 +1,89 @@
-DropShadowContainer:
+Widget:
+	title: 'test'
+	desc: 'test2'
 	canvas.before:
 		Color:
 			rgb: (1., 1., 1.)
 		Rectangle:
 			size: self.size
 			pos: self.pos
-	FlatLabel:
-		size_hint: (None, None)
-		size: (500, 300)
-		pos: (100, 100)
-		color_name: 'blue'
-		font_size: '40dp'
-		text: 'test'
-	FlatButton:
-		size: (200, 100)
-		pos: (250, 350)
+	FlatTextInput:
+		pos: 20, 440
+		size: 200, 100
+	FlatIconButton:
 		color_name: 'violet'
-		font_size: '40dp'
-		text: 'test2'
+		ripple_color_name: 'white'
+		text: 'Icon Button'
+		font_size: '16sp'
+		icon: 'fa-home'
+		pos: (20, 320)
+		size: (200, 100)
+	FlatIconButton:
+		color_name: 'light_gray'
+		ripple_color_name: 'red'
+		icon_color_name: 'dark_gray'
+		font_color_name: 'black'
+		text: 'Colored Icon'
+		font_size: '16sp'
+		icon: 'fa-chevron-left'
+		pos: (500, 320)
+		size: (200, 100)
+	FlatButton:
+		color_name: 'blue'
+		ripple_color_name: 'yellow'
+		ripple_scale: 1.0
+		text: 'test'
+		font_size: '26sp'
+		pos: (240, 320)
+		size: (200, 100)
+	FlatCheckBox:
+		ripple_color_name: 'orange'
+		check_color_name: 'orange'
+		size: (100, 100)
+		pos: (140, 200)
+		ripple_duration_in: .2
+		check_scale: .9
+	FlatCheckBox:
+		ripple_color_name: 'blue'
+		check_color_name: 'black'
+		outline_size: 10
+		outline_color_name: 'red'
+		size: (50, 50)
+		pos: (20, 200)
+		ripple_duration_in: .2
+		check_scale: .6
+	BoxLayout:
+		orientation: 'vertical'
+		size: 300, 500
+		padding: 20
+		spacing: 20
+		CheckBoxListItem:
+			ripple_color_name: 'yellow'
+			font_size: '40dp'
+			text: 'test'
+			group: '1'
+			ripple_duration_in: .2
+		CheckBoxListItem:
+			ripple_color_name: 'yellow'
+			font_size: '40dp'
+			text: 'test'
+			group: '1'
+			ripple_duration_in: .2
+		CheckBoxListItem:
+			ripple_color_name: 'yellow'
+			font_size: '40dp'
+			text: 'test'
+			group: '1'
+			ripple_duration_in: .2
+		CheckBoxListItem:
+			ripple_color_name: 'yellow'
+			font_size: '40dp'
+			text: 'test'
+			group: '1'
+			ripple_duration_in: .2
 
-<DropShadowContainer>:
+
+
 
 
 

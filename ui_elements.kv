@@ -15,7 +15,8 @@
         color: (43./255., 153./255., 1.0)
 
 
-<-FlatTextInput@TextInput>:
+<-FlatTextInput>:
+    ripple_color: app.get_color(self.ripple_color_name)
     canvas.before:
         Color:
             rgba: self.background_color
@@ -50,26 +51,14 @@
 
 
 <FlatButton>:
-    color: app.get_color(self.color_name) 
+    color: app.get_color(self.color_name)
+    ripple_color: app.get_color(self.ripple_color_name)
     canvas.before:
         Color:
             rgb: root.color_down if root.state == 'down' or root.disabled else root.color
         Rectangle:
             size: self.size
             pos: self.pos
-    canvas.after:
-        StencilPush:
-        Rectangle:
-            size: self.size
-            pos: self.pos
-        StencilUse:
-        Color:
-            rgba: self.touch_color
-        Ellipse:
-            size: self.touch_rad, self.touch_rad
-            pos: self.touch_pos[0] - self.touch_rad/2., self.touch_pos[1] - self.touch_rad/2.
-        StencilUnUse:
-        StencilPop:
 
     FlatLabel:
         size_hint: (None, 1.0)
@@ -79,7 +68,7 @@
         text: root.text
         valign: 'middle'
         halign: 'center'
-        font_size: '14dp'
+        font_size: root.font_size
 
 
 
@@ -93,8 +82,10 @@
 
 
 
+
 <FlatIconButton>:
     color: app.get_color(self.color_name) 
+    ripple_color: app.get_color(self.ripple_color_name)
     canvas.before:
         Color:
             rgb: root.color_down if root.state == 'down' or root.disabled else root.color
@@ -102,27 +93,31 @@
             size: self.size
             pos: self.pos
     StackLayout:
-        orientation: 'lr-tb'
-        size_hint: (1.0, 1.0)
+        orientation: 'tb-lr'
+        size_hint: (None, 1.0)
+        width: self.minimum_width
         spacing: '5dp'
+        padding: '5dp'
         id: label_space
         FlatIcon:
-            size_hint: (.5, 1.0)
+            size_hint: (None, 1.0)
+            width: self.texture_size[0]
             icon: root.icon
             color_name: root.icon_color_name
         FlatLabel:
             size_hint: (None, 1.0)
-            pos_hint: {'x': .5}
             width: self.texture_size[0]
+            pos_hint: {'x': .5}
             text: root.text
             color_name: root.font_color_name
             valign: 'middle'
             halign: 'center'
-            font_size: '14dp'
+            font_size: root.font_size
 
 
 <FlatToggleButton>:
-    color: app.get_color(self.color_name) 
+    color: app.get_color(self.color_name)
+    ripple_color: app.get_color(self.ripple_color_name)
     canvas.before:
         Color:
             rgb: root.color if root.state == 'normal' else root.color_down
@@ -217,6 +212,7 @@
 
 
 <-FlatCheckBox>:
+    ripple_color: app.get_color(self.ripple_color_name)
     canvas.before:
         Color:
             rgba: app.get_color(self.outline_color_name)
@@ -242,18 +238,21 @@
     size_hint: (1.0, None)
     height: label.height
     active: checkbox.active
+    ripple_color: app.get_color(self.ripple_color_name)
     FlatLabel:
         id: label
-        text: root.answer_text
+        text: root.text
         size_hint: (.8, None)
-        color: (0., 0., 0., 1.)
+        color: app.get_color(root.text_color_name)
         font_size: '18dp'
         text_size: (root.size[0]*.8, None)
         height: self.texture_size[1]
     FlatCheckBox:
         group: root.group
         id: checkbox
-        size_hint: (.2, 1.0)
+        no_interact: True
+        size_hint: (None, 1.0)
+        width: self.height
         outline_color_name: root.outline_color_name
         outline_size: root.outline_size
         check_color_name: root.check_color_name

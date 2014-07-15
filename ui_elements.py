@@ -20,6 +20,90 @@ from kivy.animation import Animation
 from kivy.uix.label import Label
 from kivy.uix.scrollview import ScrollView
 from kivy.uix.popup import Popup
+from kivy.uix.textinput import TextInput
+
+from kivy.graphics import (StencilPush, StencilPop, StencilUse, StencilUnUse, 
+    Rectangle, Ellipse, Color)
+import weakref
+
+
+class TouchRippleBehavior(object):
+    ripple_rad = NumericProperty(10)
+    ripple_pos = ListProperty([0, 0])
+    ripple_color = ListProperty((1., 1., 1., 1.))
+    ripple_duration_in = NumericProperty(.4)
+    ripple_duration_out = NumericProperty(.5)
+    fade_to_alpha = NumericProperty(.75)
+    ripple_scale = NumericProperty(2.0)
+    ripple_func_in = StringProperty('in_cubic')
+    ripple_func_out = StringProperty('out_quad')
+
+    def on_touch_down(self, touch):
+        super(TouchRippleBehavior, self).on_touch_down(touch)
+        if self.collide_point(touch.x, touch.y):
+            self.anim_complete(self, self)
+            self.ripple_pos = ripple_pos = (touch.x, touch.y)
+            Animation.cancel_all(self, 'ripple_rad', 'ripple_color')
+            rc = self.ripple_color
+
+            touch.grab(self)
+            ripple_rad = self.ripple_rad
+            self.ripple_color = [rc[0], rc[1], rc[2], 1.]
+            anim = Animation(
+                ripple_rad=max(self.width, self.height) * self.ripple_scale, 
+                t=self.ripple_func_in,
+                ripple_color=[rc[0], rc[1], rc[2], self.fade_to_alpha], 
+                duration=self.ripple_duration_in)
+            anim.start(self)
+            with self.canvas.after:
+                StencilPush()
+                Rectangle(size=self.size, pos=self.pos)
+                StencilUse()
+                self.col_instruction = Color(rgba=self.ripple_color)
+                self.ellipse = Ellipse(size=(ripple_rad, ripple_rad),
+                    pos=(ripple_pos[0] - ripple_rad/2., 
+                    ripple_pos[1] - ripple_rad/2.))
+                StencilUnUse()
+                StencilPop()
+            self.bind(ripple_color=self.set_color, ripple_pos=self.set_ellipse,
+                ripple_rad=self.set_ellipse)
+
+
+
+    def set_ellipse(self, instance, value):
+        ellipse = self.ellipse
+        ripple_pos = self.ripple_pos
+        ripple_rad = self.ripple_rad
+        ellipse.size = (ripple_rad, ripple_rad)
+        ellipse.pos = (ripple_pos[0] - ripple_rad/2., 
+            ripple_pos[1] - ripple_rad/2.)
+
+    def set_color(self, instance, value):
+        self.col_instruction.rgba = value
+
+    def on_touch_up(self, touch):
+        super(TouchRippleBehavior, self).on_touch_up(touch)
+        if touch.grab_current is self:
+            Animation.cancel_all(self, 'ripple_rad', 'ripple_color')
+            rc = self.ripple_color
+            anim = Animation(ripple_color=[rc[0], rc[1], rc[2], 0.], 
+                t=self.ripple_func_out, duration=self.ripple_duration_out)
+            anim.bind(on_complete=self.anim_complete)
+            anim.start(self)
+            touch.ungrab(self)
+
+    def anim_complete(self, anim, instance):
+        self.ripple_rad = 10
+        self.canvas.after.clear()
+
+
+class FlatTextInput(TouchRippleBehavior, TextInput):
+    ripple_color_name = StringProperty('default_ripple')
+
+    def on_touch_down(self, touch):
+        TextInput.on_touch_down(self, touch)
+        super(FlatTextInput, self).on_touch_down(touch)
+
 
 
 class FlatPopup(Popup):
@@ -31,57 +115,33 @@ class FlatScrollView(ScrollView):
     def scroll_to_top(self):
         self.scroll_y = 1.0
 
-class FlatButton(ButtonBehavior, AnchorLayout):
+class FlatButton(ButtonBehavior,TouchRippleBehavior,  AnchorLayout):
     color = ListProperty([1., 1., 1.])
     color_down = ListProperty([.7, .7, .7])
     text = StringProperty('')
     color_name = StringProperty('default')
     font_color_name = StringProperty('font_default')
-    touch_rad = NumericProperty(10)
-    touch_pos = ListProperty([0, 0])
-    touch_color = ListProperty((1., 0., 0., 1.))
-
+    ripple_color_name = StringProperty('default_ripple')
+    font_size = NumericProperty(12)
+    
     def on_color(self, instance, value):
         self.color_down = [x*.7 for x in value]
 
-    def on_touch_down(self, touch):
-        super(FlatButton, self).on_touch_down(touch)
-        if self.collide_point(touch.x, touch.y):
-            self.touch_pos = (touch.x, touch.y)
-            Animation.cancel_all(self)
-            tc = self.touch_color
-            self.touch_color = [tc[0], tc[1], tc[2], 1.]
-            anim = Animation(touch_rad=self.width*2, t='in_cubic',
-                touch_color=[tc[0], tc[1], tc[2], .75], duration=.3)
-            anim.start(self)
-
-    def on_touch_up(self, touch):
-        super(FlatButton, self).on_touch_up(touch)
-        Animation.cancel_all(self)
-        tc = self.touch_color
-        anim = Animation(touch_color=[tc[0], tc[1], tc[2], 0.], 
-            t='out_quad', duration=.3)
-        anim.bind(on_complete=self.anim_complete)
-        anim.start(self)
-
-    def anim_complete(self, anim, instance):
-        self.touch_rad = 10
-        
-
-
-
-
-class FlatIconButton(ButtonBehavior, AnchorLayout):
+    
+class FlatIconButton(ButtonBehavior, TouchRippleBehavior, AnchorLayout):
     color = ListProperty([1., 1., 1.])
     color_down = ListProperty([.7, .7, .7])
     text = StringProperty('')
     icon = StringProperty('')
     color_name = StringProperty('default')
+    font_size = NumericProperty(12)
     icon_color_name = StringProperty('font_default')
     font_color_name = StringProperty('font_default')
+    ripple_color_name = StringProperty('default_ripple')
 
     def on_color(self, instance, value):
         self.color_down = [x*.7 for x in value]
+
 
 class FlatLabel(Label):
     text = StringProperty(None, allownone=True)
@@ -132,7 +192,8 @@ class OptionContent(GridLayout):
         self.dismiss_func()
 
 
-class FlatToggleButton(ToggleButtonBehavior, AnchorLayout):
+class FlatToggleButton(ToggleButtonBehavior, 
+    TouchRippleBehavior, AnchorLayout):
     color = ListProperty([1., 1., 1.])
     color_down = ListProperty([.7, .7, .7])
     text = StringProperty('')
@@ -150,7 +211,7 @@ class FlatToggleButton(ToggleButtonBehavior, AnchorLayout):
         else:
             super(FlatToggleButton, self).on_touch_down(touch)
 
-class FlatCheckBox(CheckBox):
+class FlatCheckBox(TouchRippleBehavior, CheckBox):
     check = ObjectProperty(None)
     no_interact = BooleanProperty(False)
     check_scale = NumericProperty(.5)
@@ -158,13 +219,15 @@ class FlatCheckBox(CheckBox):
     color_name = StringProperty('white')
     outline_size = NumericProperty(5)
     check_color_name = StringProperty('default')
+    ripple_color_name = StringProperty('default_ripple')
 
     def __init__(self, **kwargs):
         super(FlatCheckBox, self).__init__(**kwargs)
         self.check = check = Check(scale=self.check_scale, 
             color_name=self.check_color_name)
         self.bind(pos=check.setter('pos'), size=check.setter('size'),
-            check_scale=check.setter('scale'), check_color_name=check.setter('color_name'))
+            check_scale=check.setter('scale'), 
+            check_color_name=check.setter('color_name'))
 
     def on_active(self, instance, value):
         check = self.check
@@ -198,20 +261,25 @@ class FlatCheckBox(CheckBox):
 class TextInputFocus(StackLayout):
     close_callback = ObjectProperty(None)
     text = StringProperty(None, allownone=True)
+    
+
+class CheckBoxListItem(TouchRippleBehavior, BoxLayout):
+    text = StringProperty(None)
+    group = StringProperty(None)
     outline_color_name = StringProperty('black')
     outline_size = NumericProperty(5)
     check_color_name = StringProperty('default')
     checkbox_color_name = StringProperty('white')
-
-
-class CheckBoxListItem(BoxLayout):
-    answer_text = StringProperty(None)
-    group = StringProperty(None)
+    text_color_name = StringProperty('black')
+    ripple_color_name = StringProperty('default_ripple')
 
     def on_touch_down(self, touch):
         if self.collide_point(touch.x, touch.y):
-            checkbox = self.ids.checkbox
-            checkbox._toggle_active()
+            self.toggle_checkbox()
+        super(CheckBoxListItem, self).on_touch_down(touch)
+
+    def on_touch_up(self, touch):
+        super(CheckBoxListItem, self).on_touch_up(touch)
 
     def toggle_checkbox(self):
         self.ids.checkbox._toggle_active()
