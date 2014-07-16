@@ -42,6 +42,7 @@
     font_size: '20dp'
     disabled_color: (.8, .8, .8, 1.0)
     color: app.get_color(root.color_name)
+    style_dict: app.get_style(self.style)
 
 
 <FlatScrollView>:
@@ -61,26 +62,24 @@
             pos: self.pos
 
     FlatLabel:
-        size_hint: (None, 1.0)
-        pos_hint: {'x': .5}
+        size_hint: (1.0, 1.0)
         color_name: root.font_color_name
-        width: self.texture_size[0]
         text: root.text
+        style: root.style
+        text_size: root.size
         valign: 'middle'
         halign: 'center'
         font_size: root.font_size
-
 
 
 <FlatIcon>:
     text: app.get_icon(self.icon)
     valign: 'middle'
     font_name: 'data/font/fontawesome-webfont.ttf'
-    halign: 'right'
+    halign: 'center'
+    padding: ('5dp', '5dp')
     color: app.get_color(root.color_name)
     font_size: '64dp'
-
-
 
 
 <FlatIconButton>:
@@ -94,25 +93,28 @@
             pos: self.pos
     StackLayout:
         orientation: 'tb-lr'
-        size_hint: (None, 1.0)
-        width: self.minimum_width
-        spacing: '5dp'
-        padding: '5dp'
         id: label_space
         FlatIcon:
+            id: icon
             size_hint: (None, 1.0)
             width: self.texture_size[0]
             icon: root.icon
-            color_name: root.icon_color_name
-        FlatLabel:
-            size_hint: (None, 1.0)
-            width: self.texture_size[0]
-            pos_hint: {'x': .5}
-            text: root.text
-            color_name: root.font_color_name
             valign: 'middle'
-            halign: 'center'
+            halign: 'right'
+            color_name: root.icon_color_name
+            text_size: self.size
+        FlatLabel:
+            width: root.size[0] - icon.size[0]
+            size_hint: (None, 1.0)
+            text: root.text
+            style: root.style
+            color_name: root.font_color_name
+            on_texture_size: print(self.texture_size, self.size, self._label._internal_size)
+            valign: 'middle'
+            halign: 'left'
+            text_size: self.size
             font_size: root.font_size
+
 
 
 <FlatToggleButton>:
@@ -125,15 +127,12 @@
             size: self.size
             pos: self.pos
     FlatLabel:
-        size_hint: (None, 1.0)
-        pos_hint: {'x': .5}
-        width: self.texture_size[0]
+        size_hint: (1.0, 1.0)
         color_name: root.font_color_name
         text: root.text
         valign: 'middle'
         halign: 'center'
-        font_size: '20dp'
-
+        text_size: root.size
 
 
 <OptionContent>:

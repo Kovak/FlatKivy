@@ -1,7 +1,8 @@
 from __future__ import unicode_literals, print_function
 from kivy.utils import platform
 from kivy.lang import Builder
-from utils import construct_target_file_name
+from utils import (construct_target_file_name, get_metric_conversion, 
+    get_next_smallest_style)
 
 Builder.load_file(construct_target_file_name('ui_elements.kv', __file__))
 
@@ -24,7 +25,7 @@ from kivy.uix.textinput import TextInput
 
 from kivy.graphics import (StencilPush, StencilPop, StencilUse, StencilUnUse, 
     Rectangle, Ellipse, Color)
-import weakref
+
 
 
 class TouchRippleBehavior(object):
@@ -67,8 +68,6 @@ class TouchRippleBehavior(object):
                 StencilPop()
             self.bind(ripple_color=self.set_color, ripple_pos=self.set_ellipse,
                 ripple_rad=self.set_ellipse)
-
-
 
     def set_ellipse(self, instance, value):
         ellipse = self.ellipse
@@ -119,6 +118,7 @@ class FlatButton(ButtonBehavior,TouchRippleBehavior,  AnchorLayout):
     color = ListProperty([1., 1., 1.])
     color_down = ListProperty([.7, .7, .7])
     text = StringProperty('')
+    style = StringProperty(None, allownone=True)
     color_name = StringProperty('default')
     font_color_name = StringProperty('font_default')
     ripple_color_name = StringProperty('default_ripple')
@@ -133,6 +133,7 @@ class FlatIconButton(ButtonBehavior, TouchRippleBehavior, AnchorLayout):
     color_down = ListProperty([.7, .7, .7])
     text = StringProperty('')
     icon = StringProperty('')
+    style = StringProperty(None, allownone=True)
     color_name = StringProperty('default')
     font_size = NumericProperty(12)
     icon_color_name = StringProperty('font_default')
@@ -146,6 +147,29 @@ class FlatIconButton(ButtonBehavior, TouchRippleBehavior, AnchorLayout):
 class FlatLabel(Label):
     text = StringProperty(None, allownone=True)
     color_name = StringProperty('font_default')
+    style = StringProperty(None, allownone=True)
+    style_dict = DictProperty(None, allownone=True)
+
+    def on_style_dict(self, instance, value):
+        if value is not None:
+            self.font_name = 'data/font/' + value['font']
+            self.font_size = font_size = get_metric_conversion(
+                value['sizings']['mobile'])
+            self.color[3] = value['alpha']
+            self.shorten = not value['wrap']
+
+    def on_texture(self, instance, value):
+        if value is not None and not self.shorten and self.style is not None:
+            self.calculate_fit()
+
+    def calculate_fit(self):
+        print(self.text)
+        actual_size = self._label._internal_size
+        size = self.size
+        print(actual_size, size, self._label.content_size)
+        if actual_size[0] > size[0] or actual_size[1] > size[1]:
+            print('doesnt fit', self, self.size, self.text)
+            self.style = get_next_smallest_style(self.style)
 
 class FlatIcon(FlatLabel):
     color_name = StringProperty('default')

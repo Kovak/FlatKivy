@@ -6,9 +6,10 @@ from kivy.properties import (ObjectProperty, ListProperty)
 from numpad import DecimalNumPad, NumPad
 from ui_elements import FlatPopup as Popup
 from ui_elements import ErrorContent, OptionContent, FlatIconButton, FlatLabel
-from utils import get_icon_char, get_rgba_color
+from utils import get_icon_char, get_rgba_color, get_style
 
-
+def style_default(style_name):
+    return {}
 
 def color_default(color_name):
     return (1., 1., 1., 1.)
@@ -20,10 +21,12 @@ def icon_default(icon_name):
 class FlatApp(App):
     get_color = ObjectProperty(color_default)
     get_icon = ObjectProperty(icon_default)
+    get_style = ObjectProperty(style_default)
 
     def build(self):
         self.get_color = get_rgba_color
         self.get_icon = get_icon_char
+        self.get_style = get_style
         super(FlatApp, self).build()
 
     def raise_error(self, error_title, error_text):
