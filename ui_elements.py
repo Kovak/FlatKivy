@@ -163,12 +163,9 @@ class FlatLabel(Label):
             self.calculate_fit()
 
     def calculate_fit(self):
-        print(self.text)
         actual_size = self._label._internal_size
         size = self.size
-        print(actual_size, size, self._label.content_size)
         if actual_size[0] > size[0] or actual_size[1] > size[1]:
-            print('doesnt fit', self, self.size, self.text)
             self.style = get_next_smallest_style(self.style)
 
 class FlatIcon(FlatLabel):
