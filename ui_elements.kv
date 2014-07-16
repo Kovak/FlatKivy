@@ -16,7 +16,7 @@
 
 
 <-FlatTextInput>:
-    ripple_color: app.get_color(self.ripple_color_name)
+    ripple_color: app.get_color(self.ripple_color_tuple)
     canvas.before:
         Color:
             rgba: self.background_color
@@ -41,7 +41,7 @@
 <FlatLabel>:
     font_size: '20dp'
     disabled_color: (.8, .8, .8, 1.0)
-    color: app.get_color(root.color_name)
+    color: app.get_color(root.color_tuple)
     style_dict: app.get_style(self.style)
 
 
@@ -52,8 +52,8 @@
 
 
 <FlatButton>:
-    color: app.get_color(self.color_name)
-    ripple_color: app.get_color(self.ripple_color_name)
+    color: app.get_color(self.color_tuple)
+    ripple_color: app.get_color(self.ripple_color_tuple)
     canvas.before:
         Color:
             rgb: root.color_down if root.state == 'down' or root.disabled else root.color
@@ -63,7 +63,7 @@
 
     FlatLabel:
         size_hint: (1.0, 1.0)
-        color_name: root.font_color_name
+        color_tuple: root.font_color_tuple
         text: root.text
         style: root.style
         text_size: root.size
@@ -78,13 +78,13 @@
     font_name: 'data/font/fontawesome-webfont.ttf'
     halign: 'center'
     padding: ('5dp', '5dp')
-    color: app.get_color(root.color_name)
+    color: app.get_color(root.color_tuple)
     font_size: '64dp'
 
 
 <FlatIconButton>:
-    color: app.get_color(self.color_name) 
-    ripple_color: app.get_color(self.ripple_color_name)
+    color: app.get_color(self.color_tuple) 
+    ripple_color: app.get_color(self.ripple_color_tuple)
     canvas.before:
         Color:
             rgb: root.color_down if root.state == 'down' or root.disabled else root.color
@@ -101,14 +101,14 @@
             icon: root.icon
             valign: 'middle'
             halign: 'right'
-            color_name: root.icon_color_name
+            color_tuple: root.icon_color_tuple
             text_size: self.size
         FlatLabel:
             width: root.size[0] - icon.size[0]
             size_hint: (None, 1.0)
             text: root.text
             style: root.style
-            color_name: root.font_color_name
+            color_tuple: root.font_color_tuple
             on_texture_size: print(self.texture_size, self.size, self._label._internal_size)
             valign: 'middle'
             halign: 'left'
@@ -118,8 +118,8 @@
 
 
 <FlatToggleButton>:
-    color: app.get_color(self.color_name)
-    ripple_color: app.get_color(self.ripple_color_name)
+    color: app.get_color(self.color_tuple)
+    ripple_color: app.get_color(self.ripple_color_tuple)
     canvas.before:
         Color:
             rgb: root.color if root.state == 'normal' else root.color_down
@@ -128,7 +128,7 @@
             pos: self.pos
     FlatLabel:
         size_hint: (1.0, 1.0)
-        color_name: root.font_color_name
+        color_tuple: root.font_color_tuple
         text: root.text
         valign: 'middle'
         halign: 'center'
@@ -147,6 +147,7 @@
         font_size: '14sp'
         valign: 'top'
         text: root.option_text
+
 
 <ErrorContent>:
     orientation: 'tb-lr'
@@ -211,15 +212,15 @@
 
 
 <-FlatCheckBox>:
-    ripple_color: app.get_color(self.ripple_color_name)
+    ripple_color: app.get_color(self.ripple_color_tuple)
     canvas.before:
         Color:
-            rgba: app.get_color(self.outline_color_name)
+            rgba: app.get_color(self.outline_color_tuple)
         Rectangle:
             size: self.size
             pos: self.pos
         Color:
-            rgba: app.get_color(self.color_name)
+            rgba: app.get_color(self.color_tuple)
         Rectangle:
             size: self.size[0] - sp(self.outline_size), self.size[1] - sp(self.outline_size)
             pos: self.pos[0] + sp(self.outline_size/2.), self.pos[1] + sp(self.outline_size/2.)
@@ -237,12 +238,12 @@
     size_hint: (1.0, None)
     height: label.height
     active: checkbox.active
-    ripple_color: app.get_color(self.ripple_color_name)
+    ripple_color: app.get_color(self.ripple_color_tuple)
     FlatLabel:
         id: label
         text: root.text
         size_hint: (.8, None)
-        color: app.get_color(root.text_color_name)
+        color: app.get_color(root.text_color_tuple)
         font_size: '18dp'
         text_size: (root.size[0]*.8, None)
         height: self.texture_size[1]
@@ -252,7 +253,7 @@
         no_interact: True
         size_hint: (None, 1.0)
         width: self.height
-        outline_color_name: root.outline_color_name
+        outline_color_tuple: root.outline_color_tuple
         outline_size: root.outline_size
-        check_color_name: root.check_color_name
-        color_name: root.checkbox_color_name
+        check_color_tuple: root.check_color_tuple
+        color_tuple: root.checkbox_color_tuple

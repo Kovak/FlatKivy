@@ -97,7 +97,7 @@ class TouchRippleBehavior(object):
 
 
 class FlatTextInput(TouchRippleBehavior, TextInput):
-    ripple_color_name = StringProperty('default_ripple')
+    ripple_color_tuple = ListProperty(['Grey', '10000'])
 
     def on_touch_down(self, touch):
         TextInput.on_touch_down(self, touch)
@@ -119,9 +119,9 @@ class FlatButton(ButtonBehavior,TouchRippleBehavior,  AnchorLayout):
     color_down = ListProperty([.7, .7, .7])
     text = StringProperty('')
     style = StringProperty(None, allownone=True)
-    color_name = StringProperty('default')
-    font_color_name = StringProperty('font_default')
-    ripple_color_name = StringProperty('default_ripple')
+    color_tuple = ListProperty(['Blue', '500'])
+    font_color_tuple = ListProperty(['Grey', '1000'])
+    ripple_color_tuple = ListProperty(['Grey', '10000'])
     font_size = NumericProperty(12)
     
     def on_color(self, instance, value):
@@ -134,11 +134,11 @@ class FlatIconButton(ButtonBehavior, TouchRippleBehavior, AnchorLayout):
     text = StringProperty('')
     icon = StringProperty('')
     style = StringProperty(None, allownone=True)
-    color_name = StringProperty('default')
     font_size = NumericProperty(12)
-    icon_color_name = StringProperty('font_default')
-    font_color_name = StringProperty('font_default')
-    ripple_color_name = StringProperty('default_ripple')
+    icon_color_tuple = ListProperty(['Grey', '1000'])
+    color_tuple = ListProperty(['Blue', '500'])
+    font_color_tuple = ListProperty(['Grey', '1000'])
+    ripple_color_tuple = ListProperty(['Grey', '10000'])
 
     def on_color(self, instance, value):
         self.color_down = [x*.7 for x in value]
@@ -146,7 +146,7 @@ class FlatIconButton(ButtonBehavior, TouchRippleBehavior, AnchorLayout):
 
 class FlatLabel(Label):
     text = StringProperty(None, allownone=True)
-    color_name = StringProperty('font_default')
+    color_tuple = ListProperty(['Grey', '10000'])
     style = StringProperty(None, allownone=True)
     style_dict = DictProperty(None, allownone=True)
 
@@ -169,7 +169,7 @@ class FlatLabel(Label):
             self.style = get_next_smallest_style(self.style)
 
 class FlatIcon(FlatLabel):
-    color_name = StringProperty('default')
+    color_tuple = ListProperty(['Grey', '10000'])
     icon = StringProperty('')
 
 class Check(FlatIcon):
@@ -218,8 +218,9 @@ class FlatToggleButton(ToggleButtonBehavior,
     color = ListProperty([1., 1., 1.])
     color_down = ListProperty([.7, .7, .7])
     text = StringProperty('')
-    color_name = StringProperty('default')
-    font_color_name = StringProperty('font_default')
+    color_tuple = ListProperty(['Blue', '500'])
+    font_color_tuple = ListProperty(['Grey', '1000'])
+    ripple_color_tuple = ListProperty(['Grey', '10000'])
     no_up = BooleanProperty(False)
 
     def on_color(self, instance, value):
@@ -236,19 +237,19 @@ class FlatCheckBox(TouchRippleBehavior, CheckBox):
     check = ObjectProperty(None)
     no_interact = BooleanProperty(False)
     check_scale = NumericProperty(.5)
-    outline_color_name = StringProperty('black')
-    color_name = StringProperty('white')
     outline_size = NumericProperty(5)
-    check_color_name = StringProperty('default')
-    ripple_color_name = StringProperty('default_ripple')
+    color_tuple = ListProperty(['Grey', '10000'])
+    check_color_tuple = ListProperty(['Grey', '1000'])
+    outline_color_tuple = ListProperty(['Grey', '1000'])
+    ripple_color_tuple = ListProperty(['Grey', '10000'])
 
     def __init__(self, **kwargs):
         super(FlatCheckBox, self).__init__(**kwargs)
         self.check = check = Check(scale=self.check_scale, 
-            color_name=self.check_color_name)
+            color_tuple=self.check_color_tuple)
         self.bind(pos=check.setter('pos'), size=check.setter('size'),
             check_scale=check.setter('scale'), 
-            check_color_name=check.setter('color_name'))
+            check_color_tuple=check.setter('color_tuple'))
 
     def on_active(self, instance, value):
         check = self.check
@@ -287,12 +288,13 @@ class TextInputFocus(StackLayout):
 class CheckBoxListItem(TouchRippleBehavior, BoxLayout):
     text = StringProperty(None)
     group = StringProperty(None)
-    outline_color_name = StringProperty('black')
     outline_size = NumericProperty(5)
-    check_color_name = StringProperty('default')
-    checkbox_color_name = StringProperty('white')
-    text_color_name = StringProperty('black')
-    ripple_color_name = StringProperty('default_ripple')
+    font_color_tuple = ListProperty(['Grey', '1000'])
+    color_tuple = ListProperty(['Blue', '500'])
+    check_color_tuple = ListProperty(['Grey', '1000'])
+    checkbox_color_tuple = ListProperty(['Grey', '10000'])
+    outline_color_tuple = ListProperty(['Grey', '1000'])
+    ripple_color_tuple = ListProperty(['Grey', '10000'])
 
     def on_touch_down(self, touch):
         if self.collide_point(touch.x, touch.y):

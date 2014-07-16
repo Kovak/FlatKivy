@@ -11,7 +11,7 @@ from utils import get_icon_char, get_rgba_color, get_style
 def style_default(style_name):
     return {}
 
-def color_default(color_name):
+def color_default(color_tuple):
     return (1., 1., 1., 1.)
 
 def icon_default(icon_name):

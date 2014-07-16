@@ -1,6 +1,6 @@
 from __future__ import unicode_literals, print_function
 from os import path
-from kivy.utils import platform
+from kivy.utils import platform, get_color_from_hex
 from color_definitions import colors
 from fa_icon_definitions import fa_icons
 from font_definitions import font_styles, wrap_ids
@@ -44,11 +44,12 @@ def get_icon_char(icon):
     else:
         return ''
 
-def get_rgba_color(color):
+def get_rgba_color(color_tuple):
+    color, weight = color_tuple
     try:
-        return colors[color]
+        return get_color_from_hex(colors[color][weight])
     except:
-        print('Error: ' + color + ' not found, set to default')
-        return colors['default']
+        print('Error: ' + color + weight + ' not found, set to default')
+        return (1., 1., 1., 1.)
     
 
