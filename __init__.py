@@ -63,6 +63,7 @@ class FlatApp(App):
         self.get_icon = get_icon_char
         self.get_style = get_style
         super(FlatApp, self).__init__(**kwargs)
+        self.setup_themes()
 
     def get_font(self, font_file):
         return construct_target_file_name(font_file, None)
@@ -103,6 +104,73 @@ class FlatApp(App):
                 numpad_popup.dismiss()
         numpad.return_callback = return_callback
         numpad_popup.open()
+
+    def setup_themes(self):
+        variant_1 = {
+            'FlatButton':{
+                'color_tuple': ('LightBlue', '500'),
+                'ripple_color_tuple': ('Cyan', '100'),
+                'font_color_tuple': ('Gray', '1000'),
+                'style': 'Display 2',
+                'ripple_scale': 2.0,
+                },
+            'FlatIconButton':{
+                'color_tuple': ('LightBlue', '500'),
+                'ripple_color_tuple': ('Cyan', '100'),
+                'font_color_tuple': ('Gray', '1000'),
+                'style': 'Display 2',
+                'ripple_scale': 2.0,
+                'icon_color_tuple': ('Gray', '1000')
+                },
+            'FlatToggleButton':{
+                'color_tuple': ('LightBlue', '500'),
+                'ripple_color_tuple': ('Cyan', '100'),
+                'font_color_tuple': ('Gray', '1000'),
+                'style': 'Display 2',
+                'ripple_scale': 2.0,
+                },
+            'FlatCheckBox':{
+                'color_tuple': ('Gray', '0000'),
+                'ripple_color_tuple': ('Cyan', '100'),
+                'check_color_tuple': ('LightBlue', '500'),
+                'outline_color_tuple': ('Gray', '1000'),
+                'style': 'Display 2',
+                'ripple_scale': 2.0,
+                'check_scale': .7,
+                'outline_size': '10dp',
+                },
+            'CheckBoxListItem':{
+                'color_tuple': ('Gray', '0000'),
+                'ripple_color_tuple': ('Cyan', '100'),
+                'check_color_tuple': ('LightBlue', '500'),
+                'outline_color_tuple': ('Gray', '1000'),
+                'style': 'Display 2',
+                'ripple_scale': 2.0,
+                'check_scale': .7,
+                'outline_size': '10dp',
+                },
+            }
+
+        variant_2 = {
+            'FlatButton':{
+                'color_tuple': ('Green', '500'),
+                'ripple_color_tuple': ('Cyan', '100'),
+                'font_color_tuple': ('Gray', '1000'),
+                'style': 'Display 2',
+                'ripple_scale': 2.0,
+                },
+            'FlatIconButton':{
+                'color_tuple': ('Green', '500'),
+                'ripple_color_tuple': ('Cyan', '100'),
+                'font_color_tuple': ('Gray', '1000'),
+                'style': 'Display 2',
+                'ripple_scale': 2.0,
+                'icon_color_tuple': ('Gray', '1000')
+                },
+            }
+
+        self.theme_manager.add_theme('blue', 'variant_1', variant_1)
+        self.theme_manager.add_theme('blue', 'variant_2', variant_2)
 
 
 if __name__ == '__main__':
