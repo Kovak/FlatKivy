@@ -5,8 +5,10 @@ from kivy.app import App
 from kivy.properties import (ObjectProperty, ListProperty)
 from numpad import DecimalNumPad, NumPad
 from ui_elements import FlatPopup as Popup
-from ui_elements import ErrorContent, OptionContent, FlatIconButton, FlatLabel
-from utils import get_icon_char, get_rgba_color, get_style
+from ui_elements import (ErrorContent, OptionContent, FlatIconButton, 
+    FlatLabel, FlatButton, FlatToggleButton, FlatCheckBox, CheckBoxListItem,)
+from utils import get_icon_char, get_rgba_color, get_style, construct_target_file_name
+from kivy.uix.effectwidget import EffectWidget, HorizontalBlurEffect, VerticalBlurEffect
 
 def style_default(style_name):
     return {}
@@ -18,16 +20,52 @@ def icon_default(icon_name):
     return ''
 
 
+class ThemeManager(object):
+
+    types_to_theme = {
+        'FlatButton': FlatButton, 'FlatIconButton': FlatIconButton, 
+        'FlatLabel': FlatLabel, 'FlatToggleButton': FlatToggleButton,
+        'FlatCheckBox': FlatCheckBox, 'CheckBoxListItem': CheckBoxListItem,
+        }
+
+    themes = {}
+
+    def get_theme(self, theme_name, variant_name):
+        try:
+            return self.themes[theme_name][variant_name]
+        except: 
+            print(theme_name, variant_name, 'not in theme')
+            return None
+
+    def get_theme_types(self):
+        return self.types_to_theme
+
+    def add_theme_type(self, type_name, theme_type):
+        self.types_to_theme[type_name] = theme_type
+
+    def add_theme(self, theme, variant, theme_dict):
+        themes = self.themes
+        if theme not in themes:
+            themes[theme] = {}
+        if variant not in themes[theme]:
+            themes[theme][variant] = {}
+        self.themes[theme][variant] = theme_dict
+
 class FlatApp(App):
     get_color = ObjectProperty(color_default)
     get_icon = ObjectProperty(icon_default)
     get_style = ObjectProperty(style_default)
 
-    def build(self):
+
+    def __init__(self, **kwargs):
+        self.theme_manager = ThemeManager()
         self.get_color = get_rgba_color
         self.get_icon = get_icon_char
         self.get_style = get_style
-        super(FlatApp, self).build()
+        super(FlatApp, self).__init__(**kwargs)
+
+    def get_font(self, font_file):
+        return construct_target_file_name(font_file, None)
 
     def raise_error(self, error_title, error_text):
         error_content = ErrorContent()

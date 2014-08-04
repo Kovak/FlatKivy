@@ -40,7 +40,6 @@
 
 <FlatLabel>:
     font_size: '20dp'
-    disabled_color: (.8, .8, .8, 1.0)
     color: app.get_color(root.color_tuple)
     style_dict: app.get_style(self.style)
 
@@ -75,7 +74,7 @@
 <FlatIcon>:
     text: app.get_icon(self.icon)
     valign: 'middle'
-    font_name: 'data/font/fontawesome-webfont.ttf'
+    font_name: app.get_font('data/font/fontawesome-webfont.ttf')
     halign: 'center'
     padding: ('5dp', '5dp')
     color: app.get_color(root.color_tuple)
@@ -94,6 +93,8 @@
     StackLayout:
         orientation: 'tb-lr'
         id: label_space
+        padding: root.content_padding
+        spacing: root.content_spacing
         FlatIcon:
             id: icon
             size_hint: (None, 1.0)
@@ -101,6 +102,7 @@
             icon: root.icon
             valign: 'middle'
             halign: 'right'
+            opacity: label.color[3]
             color_tuple: root.icon_color_tuple
             text_size: self.size
         FlatLabel:
@@ -108,13 +110,46 @@
             size_hint: (None, 1.0)
             text: root.text
             style: root.style
+            id: label
             color_tuple: root.font_color_tuple
-            on_texture_size: print(self.texture_size, self.size, self._label._internal_size)
             valign: 'middle'
             halign: 'left'
             text_size: self.size
             font_size: root.font_size
 
+<-FlatIconButtonLeft>:
+    color: app.get_color(self.color_tuple) 
+    ripple_color: app.get_color(self.ripple_color_tuple)
+    canvas.before:
+        Color:
+            rgb: root.color_down if root.state == 'down' or root.disabled else root.color
+        Rectangle:
+            size: self.size
+            pos: self.pos
+    StackLayout:
+        orientation: 'tb-lr'
+        id: label_space
+        FlatLabel:
+            width: root.size[0] - icon.size[0]
+            size_hint: (None, 1.0)
+            text: root.text
+            style: root.style
+            id: label
+            color_tuple: root.font_color_tuple
+            valign: 'middle'
+            halign: 'right'
+            text_size: self.size
+            font_size: root.font_size
+        FlatIcon:
+            id: icon
+            size_hint: (None, 1.0)
+            width: self.texture_size[0]
+            icon: root.icon
+            valign: 'middle'
+            halign: 'left'
+            opacity: label.color[3]
+            color_tuple: root.icon_color_tuple
+            text_size: self.size
 
 
 <FlatToggleButton>:
@@ -130,6 +165,7 @@
         size_hint: (1.0, 1.0)
         color_tuple: root.font_color_tuple
         text: root.text
+        style: root.style
         valign: 'middle'
         halign: 'center'
         text_size: root.size
@@ -236,17 +272,16 @@
 <CheckBoxListItem>:
     orientation: 'horizontal'
     size_hint: (1.0, None)
-    height: label.height
+    height: '60dp'
     active: checkbox.active
     ripple_color: app.get_color(self.ripple_color_tuple)
     FlatLabel:
         id: label
         text: root.text
-        size_hint: (.8, None)
-        color: app.get_color(root.text_color_tuple)
-        font_size: '18dp'
+        size_hint: (.8, 1.0)
+        color: app.get_color(root.font_color_tuple)
+        style: root.style
         text_size: (root.size[0]*.8, None)
-        height: self.texture_size[1]
     FlatCheckBox:
         group: root.group
         id: checkbox
@@ -257,3 +292,4 @@
         outline_size: root.outline_size
         check_color_tuple: root.check_color_tuple
         color_tuple: root.checkbox_color_tuple
+        check_scale: root.check_scale

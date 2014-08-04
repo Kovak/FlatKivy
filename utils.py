@@ -6,17 +6,30 @@ from fa_icon_definitions import fa_icons
 from font_definitions import font_styles, wrap_ids
 import kivy.metrics
 
+
 def get_metric_conversion(metric_tuple):
     return getattr(kivy.metrics, metric_tuple[1])(metric_tuple[0])
+
 
 def construct_target_file_name(target_file_name, pyfile):
     '''Returns the correct file path relative to the __file__ 
     passed as pyfile'''
+    if pyfile is None:
+        pyfile = __file__
     return path.join(path.dirname(path.abspath(pyfile)), target_file_name)
+
 
 def get_next_smallest_style(style):
     wrap_id = font_styles[style]['wrap_id']
     next_id = str(int(wrap_id)+1)
+    try:
+        return wrap_ids[next_id]
+    except:
+        return style
+
+def get_next_largest_style(style):
+    wrap_id = font_styles[style]['wrap_id']
+    next_id = str(int(wrap_id)-1)
     try:
         return wrap_ids[next_id]
     except:
@@ -43,6 +56,7 @@ def get_icon_char(icon):
             return ''
     else:
         return ''
+
 
 def get_rgba_color(color_tuple):
     color, weight = color_tuple

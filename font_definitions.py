@@ -2,19 +2,19 @@ font_styles = {
 	'Display 4': {
 		'font': 'Roboto-Light.ttf', 
 		'sizings': {'mobile': (112, 'sp'), 'desktop': (112, 'sp')},
-		'alpha': .54,
+		'alpha': .65,
 		'wrap': False,
 		}, 
 	'Display 3': {
 		'font': 'Roboto-Regular.ttf', 
 		'sizings': {'mobile': (56, 'sp'), 'desktop': (56, 'sp')},
-		'alpha': .54,
+		'alpha': .65,
 		'wrap': False,
 		},
 	'Display 2': {
 		'font': 'Roboto-Regular.ttf', 
 		'sizings': {'mobile': (45, 'sp'), 'desktop': (45, 'sp')},
-		'alpha': .54,
+		'alpha': .65,
 		'wrap': True,
 		'wrap_id': '1',
 		'leading': (48, 'pt'),
@@ -22,7 +22,7 @@ font_styles = {
 	'Display 1': {
 		'font': 'Roboto-Regular.ttf', 
 		'sizings': {'mobile': (34, 'sp'), 'desktop': (34, 'sp')},
-		'alpha': .54,
+		'alpha': .65,
 		'wrap': True,
 		'wrap_id': '2',
 		'leading': (40, 'pt'),
@@ -68,7 +68,7 @@ font_styles = {
 	'Caption': {
 		'font': 'Roboto-Regular.ttf', 
 		'sizings': {'mobile': (12, 'sp'), 'desktop': (12, 'sp')},
-		'alpha': .54,
+		'alpha': .65,
 		'wrap': False,
 		},
 	'Menu': {
