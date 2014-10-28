@@ -1,77 +1,89 @@
-Widget:
+ScreenManager:
 	title: 'test'
 	desc: 'test2'
-	canvas.before:
-		Color:
-			rgb: (1., 1., 1.)
-		Rectangle:
-			size: self.size
-			pos: self.pos
-	FlatTextInput:
-		pos: 20, 440
-		size: 200, 100
-	FlatIconButton:
-		color_tuple: ('Purple', '600')
-		font_color_tuple: ('Grey', '0000')
-		icon_color_tuple: ('Grey', '0000')
-		text: 'Icon Button'
-		style: 'Display 2'
-		icon: 'fa-home'
-		theme: ('blue', 'variant_1')
-		pos: (20, 320)
-		size: (200, 100)
-	FlatIconButtonLeft:
-		color_tuple: ('Cyan', '300')
-		ripple_color_tuple: ('Red', '100')
-		icon_color_tuple: ('Yellow', '100')
-		font_color_tuple: ('Yellow', '100')
-		text: 'Colored Icon'
-		icon: 'fa-chevron-left'
-		style: 'Button'
-		theme: ('blue', 'variant_1')
-		pos: (500, 320)
-		size: (200, 100)
-	FlatButton:
-		color_tuple: ('Red', '500')
-		ripple_color_tuple: ('Yellow', '100')
-		ripple_scale: 1.0
-		style: 'Display 2'
-		text: 'Only Built 4 Cuban Linx'
-		pos: (240, 320)
-		theme: ('blue', 'variant_2')
-		size: (200, 100)
-	FlatCheckBox:
-		ripple_color_tuple: ('Orange', '100')
-		check_color_tuple: ('Orange', '500')
-		size: (100, 100)
-		pos: (140, 200)
-		theme: ('blue', 'variant_1')
-		ripple_duration_in: .2
-	FlatCheckBox:
-		ripple_color_tuple: ('LightBlue', '100')
-		check_color_tuple: ('LightBlue', '500')
-		outline_size: 10
-		outline_color_tuple: ('LightBlue', '900')
-		size: (50, 50)
-		pos: (20, 200)
-		theme: ('blue', 'variant_1')
-		ripple_duration_in: .2
-		check_scale: .6
-	FlatLabel:
-		size: 300, 200
-		pos: 100, 25
-		style: 'Display 1'
-		color_tuple: ('Grey', '1000')
-		text: 'test test test test test test test test test test just got here test test test test test test test test test test'
-		valign: 'middle'
-        halign: 'center'
-		text_size: self.size
-	FlatLabel:
-		size: 300, 200
-		pos: 400, 25
-		style: 'Display 1'
-		color_tuple: ('Grey', '1000')
-		text: 'test test test test test test test test test test '
-		valign: 'middle'
-        halign: 'center'
-		text_size: self.size
+	size: root.size
+	FlatScreen:
+		name: 'test_2'
+		FlatButton:
+			text: 'to other screen'
+			on_release: root.current = 'test_screen'
+	FlatScreen:
+		name: 'test_screen'
+		canvas.before:
+			Color:
+				rgb: (1., 1., 1.)
+			Rectangle:
+				size: self.size
+				pos: self.pos
+		Widget:
+
+			FlatTextInput:
+				pos: 20, 440
+				size: 200, 100
+			FlatIconButton:
+				color_tuple: ('Purple', '600')
+				font_color_tuple: ('Grey', '0000')
+				icon_color_tuple: ('Grey', '0000')
+				text: 'Icon Button'
+				style: 'Display 2'
+				icon: 'fa-home'
+				theme: ('blue', 'variant_1')
+				pos: (20, 320)
+				size: (200, 100)
+			FlatIconButtonLeft:
+				color_tuple: ('Cyan', '300')
+				ripple_color_tuple: ('Red', '100')
+				icon_color_tuple: ('Yellow', '100')
+				font_color_tuple: ('Yellow', '100')
+				text: 'Colored Icon'
+				icon: 'fa-chevron-left'
+				style: 'Button'
+				theme: ('blue', 'variant_1')
+				pos: (500, 320)
+				size: (200, 100)
+			FlatButton:
+				color_tuple: ('Red', '500')
+				ripple_color_tuple: ('Yellow', '100')
+				ripple_scale: 1.0
+				style: 'Display 2'
+				text: 'Only Built 4 Cuban Linx'
+				on_release: root.current = 'test_2'
+				pos: (240, 320)
+				theme: ('blue', 'variant_2')
+				size: (200, 100)
+			FlatCheckBox:
+				ripple_color_tuple: ('Orange', '100')
+				check_color_tuple: ('Orange', '500')
+				size: (100, 100)
+				pos: (140, 200)
+				theme: ('blue', 'variant_1')
+				ripple_duration_in: .2
+			FlatCheckBox:
+				ripple_color_tuple: ('LightBlue', '100')
+				check_color_tuple: ('LightBlue', '500')
+				outline_size: 10
+				outline_color_tuple: ('LightBlue', '900')
+				size: (50, 50)
+				pos: (20, 200)
+				theme: ('blue', 'variant_1')
+				ripple_duration_in: .2
+				check_scale: .6
+			FlatLabel:
+				size: 300, 200
+				pos: 100, 25
+				style: 'Display 1'
+				color_tuple: ('Grey', '1000')
+				text: 'test test test test test test test test test test just got here test test test test test test test test test test'
+				valign: 'middle'
+		        halign: 'center'
+		        font_ramp: ('test', '1')
+				text_size: self.size
+			FlatLabel:
+				size: 300, 200
+				pos: 400, 25
+				style: 'Display 1'
+				color_tuple: ('Grey', '1000')
+				text: 'test test test test test test test test test test '
+				valign: 'middle'
+		        halign: 'center'
+				text_size: self.size

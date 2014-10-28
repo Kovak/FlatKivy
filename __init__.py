@@ -2,22 +2,30 @@ from __future__ import unicode_literals, print_function
 __version__ = '0.0.1'
 import kivy
 from kivy.app import App
-from kivy.properties import (ObjectProperty, ListProperty)
+from kivy.properties import (ObjectProperty, ListProperty, NumericProperty,
+    BooleanProperty)
 from numpad import DecimalNumPad, NumPad
-from ui_elements import FlatPopup as Popup
+from ui_elements import FlatPopup
 from ui_elements import (ErrorContent, OptionContent, FlatIconButton, 
-    FlatLabel, FlatButton, FlatToggleButton, FlatCheckBox, CheckBoxListItem,)
-from utils import get_icon_char, get_rgba_color, get_style, construct_target_file_name
-from kivy.uix.effectwidget import EffectWidget, HorizontalBlurEffect, VerticalBlurEffect
+    FlatLabel, FlatButton, FlatToggleButton, FlatCheckBox, CheckBoxListItem,
+    LogBehavior)
+from utils import get_icon_char, get_rgba_color, construct_target_file_name
+from font_definitions import get_font_ramp_group, get_style
+from dbinterface import DBInterface
+from kivy.clock import Clock
+
 
 def style_default(style_name):
-    return {}
+    return None
 
 def color_default(color_tuple):
     return (1., 1., 1., 1.)
 
 def icon_default(icon_name):
     return ''
+
+def ramp_default(ramp_group_tuple):
+    return None
 
 
 class ThemeManager(object):
@@ -51,27 +59,56 @@ class ThemeManager(object):
             themes[theme][variant] = {}
         self.themes[theme][variant] = theme_dict
 
+
 class FlatApp(App):
     get_color = ObjectProperty(color_default)
     get_icon = ObjectProperty(icon_default)
     get_style = ObjectProperty(style_default)
-
+    get_ramp_group = ObjectProperty()
+    device_id = NumericProperty(None)
+    do_device_id = BooleanProperty(True)
 
     def __init__(self, **kwargs):
         self.theme_manager = ThemeManager()
         self.get_color = get_rgba_color
         self.get_icon = get_icon_char
         self.get_style = get_style
+        self.get_ramp_group = get_font_ramp_group
         super(FlatApp, self).__init__(**kwargs)
         self.setup_themes()
+        self.numpads = numpads = {}
+        numpads['decimal'] = DecimalNumPad()
+        numpads['regular'] = NumPad()
+        if self.do_device_id:
+            log_behavior = LogBehavior()
+            self.log_manager = log_manager = log_behavior.log_manager
+            self.settings_interface = settings_interface = DBInterface(
+                construct_target_file_name('', __file__), 'settings')
+            self.device_id = device_id = settings_interface.get_entry(
+                'settings', 'device_id', 'value')
+            
+            self.bind(device_id=log_manager.setter('device_id'))
+            if device_id is None:
+                Clock.schedule_once(self.register_device_id)
+
+    def _register_device_id(self, value, is_return):
+        if is_return:
+            self.device_id = value
+            self.settings_interface.set_entry('settings', 'device_id', 'value', 
+                value)
+            
+    def register_device_id(self, dt):
+        self.raise_numpad('Enter Device ID', self._register_device_id,
+            auto_dismiss=False)
 
     def get_font(self, font_file):
         return construct_target_file_name(font_file, None)
 
-    def raise_error(self, error_title, error_text):
+    def raise_error(self, error_title, error_text, auto_dismiss=True):
         error_content = ErrorContent()
-        error_popup = Popup(
-            content=error_content, size_hint=(.6, .4))
+        error_popup = FlatPopup(
+            content=error_content, size_hint=(.6, .4),
+            auto_dismiss=auto_dismiss)
         error_content.error_text = error_text
         error_popup.title = error_title
         dismiss_button = error_content.dismiss_button
@@ -79,29 +116,37 @@ class FlatApp(App):
         error_popup.open()
 
     def raise_option_dialogue(self, option_title, option_text, options, 
-            callback):
+            callback, auto_dismiss=True):
         option_content = OptionContent(options, option_text=option_text, 
             callback=callback)
-        option_popup = Popup(content=option_content, size_hint=(.6,.4))
+        option_popup = FlatPopup(content=option_content, size_hint=(.6,.4),
+            auto_dismiss=auto_dismiss)
         option_popup.title = option_title
         option_content.dismiss_func = option_popup.dismiss
         option_popup.open()
 
     def raise_numpad(self, numpad_title, callback, units=None,
-        minimum=None, maximum=None, do_decimal=False):
+        minimum=None, maximum=None, do_decimal=False, auto_dismiss=True):
         if do_decimal:
-            numpad = DecimalNumPad(units=units, minimum_value=minimum, 
-                maximum_value=maximum)
+            numpad = self.numpads['decimal']
         else:
-            numpad = NumPad(units=units, minimum_value=minimum, 
-                maximum_value=maximum)     
-        numpad_popup = Popup(
-            title=numpad_title, content=numpad, size_hint=(.8, .8))
+            numpad = self.numpads['regular']
+        numpad.units = units
+        numpad.minimum_value = minimum
+        numpad.maximum_value = maximum
+        if numpad.parent is not None:
+            numpad.parent.remove_widget(numpad)
+        numpad_popup = FlatPopup(
+            title=numpad_title, content=numpad, size_hint=(.8, .8),
+            auto_dismiss=auto_dismiss)
         def return_callback(value, is_return):
             if callback is not None:
                 callback(value, is_return)
             if is_return:
-                numpad_popup.dismiss()
+                numpad_popup.dismiss(force=True)
+                numpad_popup.ids.container.remove_widget(numpad)
+                numpad.return_callback = None
+                numpad.display_text = '0'
         numpad.return_callback = return_callback
         numpad_popup.open()
 

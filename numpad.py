@@ -50,7 +50,8 @@ class NumPad(Widget):
             self.display_text = str(self.maximum_value)
             return
         self.display_value = int(value)
-        self.return_callback(self.display_value, False)
+        if self.return_callback is not None:
+            self.return_callback(self.display_value, False)
 
 
 class DecimalNumPad(NumPad):
@@ -83,4 +84,5 @@ class DecimalNumPad(NumPad):
             self.display_text = str(self.maximum_value)
             return
         self.display_value = float(value)
-        self.return_callback(self.display_value, False)
+        if self.return_callback is not None:
+            self.return_callback(self.display_value, False)

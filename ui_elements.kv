@@ -42,6 +42,8 @@
     font_size: '20dp'
     color: app.get_color(root.color_tuple)
     style_dict: app.get_style(self.style)
+    ramp_group: app.get_ramp_group(self.font_ramp_tuple)
+    disabled_color: (.3, .3, .3, .5)
 
 
 <FlatScrollView>:
@@ -66,6 +68,7 @@
         text: root.text
         style: root.style
         text_size: root.size
+        font_ramp_tuple: root.font_ramp_tuple
         valign: 'middle'
         halign: 'center'
         font_size: root.font_size
@@ -112,6 +115,7 @@
             style: root.style
             id: label
             color_tuple: root.font_color_tuple
+            font_ramp_tuple: root.font_ramp_tuple
             valign: 'middle'
             halign: 'left'
             text_size: self.size
@@ -137,6 +141,7 @@
             id: label
             color_tuple: root.font_color_tuple
             valign: 'middle'
+            font_ramp_tuple: root.font_ramp_tuple
             halign: 'right'
             text_size: self.size
             font_size: root.font_size
@@ -166,6 +171,7 @@
         color_tuple: root.font_color_tuple
         text: root.text
         style: root.style
+        font_ramp_tuple: root.font_ramp_tuple
         valign: 'middle'
         halign: 'center'
         text_size: root.size
@@ -198,10 +204,11 @@
         font_size: '14sp'
         valign: 'top'
         text: root.error_text
-    Button:
+    FlatButton:
         id: dismiss_button
         text: 'Ok'
         size_hint: (1.0, .2)
+        theme: ('blue', 'variant_1')
 
 
 <-FlatPopup>:

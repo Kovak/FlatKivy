@@ -1,8 +1,7 @@
 from __future__ import unicode_literals, print_function
 from kivy.utils import platform
 from kivy.lang import Builder
-from utils import (construct_target_file_name, get_metric_conversion, 
-    get_next_smallest_style, get_next_largest_style)
+from utils import construct_target_file_name, get_metric_conversion
 
 Builder.load_file(construct_target_file_name('ui_elements.kv', __file__))
 
@@ -11,7 +10,8 @@ from kivy.uix.togglebutton import ToggleButton
 from kivy.uix.stacklayout import StackLayout
 from kivy.uix.gridlayout import GridLayout
 from kivy.properties import (ObjectProperty, StringProperty, OptionProperty,
-    DictProperty, ListProperty, BooleanProperty, NumericProperty, VariableListProperty)
+    DictProperty, ListProperty, BooleanProperty, NumericProperty, 
+    VariableListProperty)
 from kivy.uix.image import Image
 from kivy.uix.boxlayout import BoxLayout
 from kivy.uix.anchorlayout import AnchorLayout
@@ -24,14 +24,20 @@ from kivy.uix.textinput import TextInput
 from kivy.app import App
 from weakref import ref
 from kivy.graphics import (StencilPush, StencilPop, StencilUse, StencilUnUse, 
-    Rectangle, Ellipse, Color)
-
+    Rectangle, Ellipse, Color, ScissorPush, ScissorPop)
+from dbinterface import DBInterface
+from kivy.event import EventDispatcher
+from kivy.uix.screenmanager import Screen
+from kivy.clock import Clock
+from kivy.app import App
 
 class GrabBehavior(object):
     last_touch = ObjectProperty(None)
 
     def on_touch_down(self, touch):
         if touch.is_mouse_scrolling:
+            return False
+        if self.disabled:
             return False
         if not self.collide_point(touch.x, touch.y):
             return False
@@ -50,10 +56,78 @@ class GrabBehavior(object):
         return self in touch.ud
 
     def on_touch_up(self, touch):
-        result = super(GrabBehavior, self).on_touch_up(touch)
-        touch.ungrab(self)
-        self.last_touch = touch
-        return result
+        if touch.grab_current is self:
+            result = super(GrabBehavior, self).on_touch_up(touch)
+            touch.ungrab(self)
+            self.last_touch = touch
+            return result
+
+
+class LogManager(EventDispatcher):
+    device_id = NumericProperty(None)
+    do_logging = BooleanProperty(True)
+    do_label_logging = BooleanProperty(False)
+    do_image_logging = BooleanProperty(False)
+    do_screen_logging = BooleanProperty(False)
+    touch_id = NumericProperty(0)
+    hour = NumericProperty(None)
+    log_path = StringProperty('default_log_dir')
+    
+
+    def __init__(self, log_path, **kwargs):
+        super(LogManager, self).__init__(**kwargs)
+        self.log_path = log_path
+        self.log_interface = log_interface = DBInterface(
+            log_path, 'log', do_date=True, do_hour=True)
+        touch_id = log_interface.get_entry('touches', 'last_touch_id', 'value')
+        if touch_id is None:
+            touch_id = 0
+        self.touch_id = touch_id
+
+    def on_device_id(self, instance, value):
+        print('in on device id', value)
+
+class LogNoTouchBehavior(object):
+    log_manager = LogManager(
+        construct_target_file_name('data/logs/', __file__))
+
+class LogBehavior(object):
+    log_manager = LogManager(
+        construct_target_file_name('data/logs/', __file__))
+
+    def on_touch_down(self, touch):
+        log_manager = self.log_manager
+        if self in touch.ud and log_manager.do_logging:
+            print(self, 'in on touch dwon')
+            coords = (touch.x, touch.y)
+            log_interface = log_manager.log_interface
+            touch_id = log_manager.touch_id
+            touch.ud['log_id'] = touch_id
+            log_interface.set_entry(
+                'touches', touch_id, 'touch_down_at', coords, 
+                do_timestamp=True)
+            log_manager.touch_id += 1
+            log_interface.set_entry(
+                'touches', 'last_touch_id', 'value', touch_id)
+        return super(LogBehavior, self).on_touch_down(touch)
+
+    def on_touch_move(self, touch):
+        log_manager = self.log_manager
+        if self in touch.ud and log_manager.do_logging:
+            coords = (touch.x, touch.y)
+            touch_id = touch.ud['log_id']
+            log_manager.log_interface.append_entry('touches', touch_id, 
+                'touch_moves_at', coords, do_timestamp=True)
+        return super(LogBehavior, self).on_touch_move(touch)
+
+    def on_touch_up(self, touch):
+        log_manager = self.log_manager
+        if self in touch.ud and log_manager.do_logging:
+            coords = (touch.x, touch.y)
+            touch_id = touch.ud['log_id']
+            log_manager.log_interface.set_entry(
+                'touches', touch_id, 'touch_up_at', coords, do_timestamp=True)
+        return super(LogBehavior, self).on_touch_up(touch)
 
 
 class ButtonBehavior(object):
@@ -89,6 +163,20 @@ class ButtonBehavior(object):
 
     def on_touch_down(self, touch):
         if self in touch.ud:
+            if isinstance(self, LogBehavior):
+                log_manager = self.log_manager
+                if log_manager.do_logging:
+                    if isinstance(self, CheckBox):
+                        touch_id = touch.ud['log_id']
+                        log_manager.log_interface.set_entry(
+                            'touches', touch_id, 
+                            'checkbox_pressed_down', self.state, 
+                            do_timestamp=True)
+                    else:
+                        touch_id = touch.ud['log_id']
+                        log_manager.log_interface.set_entry(
+                            'touches', touch_id, 
+                            'button_pressed', self.text, do_timestamp=True)
             self._do_press()
             self.dispatch(b'on_press')
         return super(ButtonBehavior, self).on_touch_down(touch)
@@ -97,7 +185,21 @@ class ButtonBehavior(object):
         return super(ButtonBehavior, self).on_touch_move(touch)
 
     def on_touch_up(self, touch):
-        if self in touch.ud:
+        if self in touch.ud:  
+            if isinstance(self, LogBehavior):
+                log_manager = self.log_manager
+                if log_manager.do_logging:
+                    if isinstance(self, CheckBox):
+                        touch_id = touch.ud['log_id']
+                        log_manager.log_interface.set_entry(
+                            'touches', touch_id, 
+                            'checkbox_released', self.state, 
+                            do_timestamp=True)
+                    else:
+                        touch_id = touch.ud['log_id']
+                        log_manager.log_interface.set_entry(
+                            'touches', touch_id, 'button_released', 
+                            self.text, do_timestamp=True)
             self._do_release()
             self.dispatch(b'on_release')
         return super(ButtonBehavior, self).on_touch_up(touch)
@@ -239,8 +341,6 @@ class ThemeBehavior(object):
                         setattr(self, propname, theme_def[propname])
 
 
-
-
 class TouchRippleBehavior(object):
     ripple_rad = NumericProperty(10)
     ripple_pos = ListProperty([0, 0])
@@ -267,15 +367,16 @@ class TouchRippleBehavior(object):
                 duration=self.ripple_duration_in)
             anim.start(self)
             with self.canvas.after:
-                StencilPush()
-                Rectangle(size=self.size, pos=self.pos)
-                StencilUse()
+                x,y = self.to_window(*self.pos)
+                width, height = self.size
+                #In python 3 the int cast will be unnecessary
+                ScissorPush(x=int(round(x)), y=int(round(y)),
+                    width=int(round(width)), height=int(round(height)))
                 self.col_instruction = Color(rgba=self.ripple_color)
                 self.ellipse = Ellipse(size=(ripple_rad, ripple_rad),
                     pos=(ripple_pos[0] - ripple_rad/2., 
                     ripple_pos[1] - ripple_rad/2.))
-                StencilUnUse()
-                StencilPop()
+                ScissorPop()
             self.bind(ripple_color=self.set_color, ripple_pos=self.set_ellipse,
                 ripple_rad=self.set_ellipse)
         return super(TouchRippleBehavior, self).on_touch_down(touch)
@@ -293,7 +394,6 @@ class TouchRippleBehavior(object):
 
     def on_touch_up(self, touch):
         if self in touch.ud:
-            Animation.cancel_all(self, 'ripple_rad', 'ripple_color')
             rc = self.ripple_color
             anim = Animation(ripple_color=[rc[0], rc[1], rc[2], 0.], 
                 t=self.ripple_func_out, duration=self.ripple_duration_out)
@@ -304,6 +404,7 @@ class TouchRippleBehavior(object):
     def anim_complete(self, anim, instance):
         self.ripple_rad = 10
         self.canvas.after.clear()
+
 
 class CheckBox(ToggleButtonBehavior, Widget):
     '''CheckBox class, see module documentation for more information.
@@ -337,7 +438,23 @@ class FlatTextInput(GrabBehavior, TouchRippleBehavior, TextInput):
         TextInput.on_touch_down(self, touch)
         super(FlatTextInput, self).on_touch_down(touch)
 
+class FlatScreen(GrabBehavior, LogNoTouchBehavior, Screen):
 
+    def on_enter(self, *args):
+        super(FlatScreen, self).on_enter(*args)
+        print('in enter screen')
+        log_manager = self.log_manager
+        if log_manager.do_screen_logging:
+            print('logging screen')
+            log_manager.log_interface.set_entry('events', 'screen_events',
+                'enter', self.name, do_history=True)
+
+    def on_leave(self, *args):
+        super(FlatScreen, self).on_leave(*args)
+        log_manager = self.log_manager
+        if log_manager.do_screen_logging:
+            log_manager.log_interface.set_entry('events', 'screen_events',
+                'exit', self.name, do_history=True)
 
 class FlatPopup(Popup):
     popup_color = ListProperty([1., 1., 1., 1.])
@@ -348,7 +465,8 @@ class FlatScrollView(ScrollView):
     def scroll_to_top(self):
         self.scroll_y = 1.0
 
-class FlatButton(GrabBehavior, TouchRippleBehavior, 
+
+class FlatButton(GrabBehavior, LogBehavior, TouchRippleBehavior, 
     ThemeBehavior, ButtonBehavior, AnchorLayout):
     color = ListProperty([1., 1., 1.])
     color_down = ListProperty([.7, .7, .7])
@@ -357,14 +475,15 @@ class FlatButton(GrabBehavior, TouchRippleBehavior,
     color_tuple = ListProperty(['Blue', '500'])
     font_color_tuple = ListProperty(['Grey', '1000'])
     ripple_color_tuple = ListProperty(['Grey', '0000'])
+    font_ramp_tuple = ListProperty(None)
     font_size = NumericProperty(12)
     
     def on_color(self, instance, value):
         self.color_down = [x*.7 for x in value]
 
     
-class FlatIconButton(GrabBehavior, ButtonBehavior, TouchRippleBehavior, 
-    ThemeBehavior, AnchorLayout):
+class FlatIconButton(GrabBehavior, LogBehavior, ButtonBehavior, 
+    TouchRippleBehavior, ThemeBehavior, AnchorLayout):
     color = ListProperty([1., 1., 1.])
     color_down = ListProperty([.7, .7, .7])
     text = StringProperty('')
@@ -374,6 +493,7 @@ class FlatIconButton(GrabBehavior, ButtonBehavior, TouchRippleBehavior,
     icon_color_tuple = ListProperty(['Grey', '1000'])
     color_tuple = ListProperty(['Blue', '500'])
     font_color_tuple = ListProperty(['Grey', '1000'])
+    font_ramp_tuple = ListProperty(None)
     ripple_color_tuple = ListProperty(['Grey', '0000'])
     content_padding = VariableListProperty([0., 0., 0., 0.])
     content_spacing = VariableListProperty([0., 0.], length=2)
@@ -386,40 +506,53 @@ class FlatIconButtonLeft(FlatIconButton):
     pass
 
 
-class FlatLabel(ThemeBehavior, Label):
+class FlatLabel(GrabBehavior, ThemeBehavior, LogBehavior, Label):
     text = StringProperty(None, allownone=True)
     color_tuple = ListProperty(['Grey', '0000'])
     style = StringProperty(None, allownone=True)
-    style_dict = DictProperty(None, allownone=True)
+    style_dict = ObjectProperty(None, allownone=True)
     do_resize = BooleanProperty(True)
+    ramp_group = ObjectProperty(None, allownone=True)
+    font_ramp_tuple = ListProperty(None)
+
+
+    def __init__(self, **kwargs):
+        super(FlatLabel, self).__init__(**kwargs)
 
     def on_style_dict(self, instance, value):
-        if value != {}:
+        if value is not None:
             self.font_name = construct_target_file_name(
-                'data/font/' + value['font'], __file__)
+                'data/font/' + value.font_file, __file__)
             self.font_size = font_size = get_metric_conversion(
-                value['sizings']['mobile'])
-            self.color[3] = value['alpha']
-            self.shorten = not value['wrap']
+                value.size_mobile)
+            self.color[3] = value.alpha
+            #self.shorten = not value['wrap']
+
+    def on_ramp_group(self, instance, value):
+        print(value, 'in on ramp group')
+        if value is not None:
+            value.add_label(self)
+            value.check_fit_for_all_labels(value.current_style, 0)
+
+    def on_touch_down(self, touch):
+        log_manager = self.log_manager
+        if log_manager.do_label_logging:
+            super(FlatLabel, self).on_touch_down(touch)
+            if self in touch.ud:
+                touch_id = touch.ud['log_id']
+                log_manager.log_interface.set_entry(
+                    'touches', touch_id, 'label_touched', self.text, 
+                    do_timestamp=True)
 
     def on_texture(self, instance, value):
-        if value is not None and not self.shorten and self.style is not None and self.do_resize:
-            self.calculate_fit()
+        ramp_group = self.ramp_group
+        if ramp_group is not None:
+            ramp_group.check_fit_for_all_labels(ramp_group.current_style, 0)
 
     def on_size(self, instance, value):
-        if not self.shorten and self.style is not None and self.do_resize:
-            self.calculate_fit()
-
-    def calculate_fit(self):
-        actual_size = self._label._internal_size
-        size = self.size
-        style = self.style
-        if actual_size[0] > size[0] or actual_size[1] > size[1]:
-            self.style = None
-            self.style = get_next_smallest_style(style)
-        elif actual_size[0] < size[0]*.5 and actual_size[1] < size[1] *.5:
-            self.style = None
-            self.style = get_next_largest_style(style)
+        ramp_group = self.ramp_group
+        if ramp_group is not None:
+            ramp_group.check_fit_for_all_labels(ramp_group.current_style, 0)
 
 
 
@@ -476,6 +609,7 @@ class FlatToggleButton(GrabBehavior, ToggleButtonBehavior,
     color_tuple = ListProperty(['Blue', '500'])
     font_color_tuple = ListProperty(['Grey', '1000'])
     ripple_color_tuple = ListProperty(['Grey', '0000'])
+    font_ramp_tuple = ListProperty(None)
     no_up = BooleanProperty(False)
     style = StringProperty(None, allownone=True)
 
@@ -489,7 +623,8 @@ class FlatToggleButton(GrabBehavior, ToggleButtonBehavior,
         else:
             super(FlatToggleButton, self).on_touch_down(touch)
 
-class FlatCheckBox(GrabBehavior, TouchRippleBehavior, ThemeBehavior, CheckBox):
+class FlatCheckBox(GrabBehavior, TouchRippleBehavior, 
+    LogBehavior, ThemeBehavior, CheckBox):
     check = ObjectProperty(None)
     no_interact = BooleanProperty(False)
     check_scale = NumericProperty(.5)
