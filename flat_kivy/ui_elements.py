@@ -65,7 +65,7 @@ class GrabBehavior(object):
 
 class LogManager(EventDispatcher):
     device_id = NumericProperty(None)
-    do_logging = BooleanProperty(True)
+    do_logging = BooleanProperty(False)
     do_label_logging = BooleanProperty(False)
     do_image_logging = BooleanProperty(False)
     do_screen_logging = BooleanProperty(False)
@@ -505,6 +505,21 @@ class FlatIconButton(GrabBehavior, LogBehavior, ButtonBehavior,
 class FlatIconButtonLeft(FlatIconButton):
     pass
 
+class FlatCard(GrabBehavior, ThemeBehavior, LogBehavior, TouchRippleBehavior,
+    ButtonBehavior, BoxLayout):
+    image_source = StringProperty(None)
+    style = StringProperty(None, allownone=True)
+    color_tuple = ListProperty(['Blue', '500'])
+    font_color_tuple = ListProperty(['Grey', '1000'])
+    font_ramp_tuple = ListProperty(None)
+    ripple_color_tuple = ListProperty(['Grey', '0000'])
+    text = StringProperty(None)
+    color = ListProperty([1., 1., 1.])
+    color_down = ListProperty([.7, .7, .7])
+
+    def on_color(self, instance, value):
+        self.color_down = [x*.7 for x in value]
+
 
 class FlatLabel(GrabBehavior, ThemeBehavior, LogBehavior, Label):
     text = StringProperty(None, allownone=True)
@@ -517,7 +532,9 @@ class FlatLabel(GrabBehavior, ThemeBehavior, LogBehavior, Label):
 
 
     def __init__(self, **kwargs):
+        self._do_check_adjustments = True
         super(FlatLabel, self).__init__(**kwargs)
+
 
     def on_style_dict(self, instance, value):
         if value is not None:
@@ -546,12 +563,16 @@ class FlatLabel(GrabBehavior, ThemeBehavior, LogBehavior, Label):
 
     def on_texture(self, instance, value):
         ramp_group = self.ramp_group
-        if ramp_group is not None:
+        if ramp_group is not None and self._do_check_adjustments:
+            print('triggering check of label sizes', self.text,
+                self.font_ramp_tuple)
             ramp_group.check_fit_for_all_labels(ramp_group.current_style, 0)
 
     def on_size(self, instance, value):
         ramp_group = self.ramp_group
-        if ramp_group is not None:
+        if ramp_group is not None and self._do_check_adjustments:
+            print('triggering check of label sizes', self.text, 
+                self.font_ramp_tuple)
             ramp_group.check_fit_for_all_labels(ramp_group.current_style, 0)
 
 
@@ -689,7 +710,7 @@ class CheckBoxListItem(GrabBehavior, TouchRippleBehavior,
     checkbox_color_tuple = ListProperty(['Grey', '0000'])
     outline_color_tuple = ListProperty(['Grey', '1000'])
     ripple_color_tuple = ListProperty(['Grey', '0000'])
-    font_color_tuple = ListProperty(['Grey', '1000'])
+    font_ramp_tuple = ListProperty(['default', '1'])
 
     def on_touch_down(self, touch):
         if self.collide_point(touch.x, touch.y):

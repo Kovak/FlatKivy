@@ -2,6 +2,7 @@ from __future__ import unicode_literals, print_function
 from kivy.uix.label import Label
 from kivy.event import EventDispatcher
 from ui_elements import FlatLabel
+from kivy.clock import Clock
 
 
 def get_style(style):
@@ -9,7 +10,7 @@ def get_style(style):
         try:
             return style_manager.styles[style]
         except:
-            print('font style: ' + style + ' not in fa_icons')
+            print('font style: ' + style + ' not defined.')
             return None
     else:
         return None
@@ -36,13 +37,14 @@ class FontStyle(object):
 
 class RampGroup(EventDispatcher):
 
-    def __init__(self, font_ramp, **kwargs):
+    def __init__(self, font_ramp, name, **kwargs):
         super(RampGroup, self).__init__(**kwargs)
         self.tracked_labels = []
         self.font_ramp = font_ramp
+        self.name = name
         self.current_style = font_ramp[0]
         self._test_label = FlatLabel()
-        self.max_iterations = 3
+        self.max_iterations = 2
 
     def copy_label_to_test_label(self, label, style):
         test_label = self._test_label
@@ -62,15 +64,22 @@ class RampGroup(EventDispatcher):
         max_iterations = self.max_iterations
         copy_label_to_test_label = self.copy_label_to_test_label
         calculate_fit = self.calculate_fit
+        
+        if self.name in ['default', 'question_default']:
+            return
         for tracked_label in tracked_labels:
+            if tracked_label.width <= 0 or tracked_label.height <= 0:
+                continue
             test_label = copy_label_to_test_label(tracked_label, style)
+
             check_fit = calculate_fit(test_label)
+            print(tracked_label.size, tracked_label.text, check_fit)
             r_add(check_fit)
-        print(returns)
-        if 'toobig' in returns and iterations <= max_iterations:
+        print(returns, iterations, max_iterations)
+        if 'toobig' in returns and iterations < max_iterations:
             self.current_style = style = self.get_next_smallest_style(style)
             self.check_fit_for_all_labels(style, iterations+1)
-        elif 'toosmall' in returns and iterations <= max_iterations:
+        elif 'toosmall' in returns and iterations < max_iterations:
             self.current_style = style = self.get_next_largest_style(style)
             self.check_fit_for_all_labels(style, iterations+1)
         else:
@@ -78,7 +87,14 @@ class RampGroup(EventDispatcher):
 
     def set_style(self, style):
         for tracked_label in self.tracked_labels:
+            tracked_label._do_check_adjustments = False
             tracked_label.style = style
+        Clock.schedule_once(self.reset_track_adjustments, 1.)
+
+    def reset_track_adjustments(self, dt):
+        for tracked_label in self.tracked_labels:
+            tracked_label._do_check_adjustments = True
+            
 
 
     def get_next_smallest_style(self, style):
@@ -103,13 +119,11 @@ class RampGroup(EventDispatcher):
         actual_size = label._label._internal_size
         size = label.size
         style = label.style
-        print(size, actual_size, label.text)
         status = 'fits'
         if actual_size[0] > size[0] or actual_size[1] > size[1]:
             status = 'toobig'
-        elif actual_size[0] < size[0]*.5 and actual_size[1] < size[1] *.6:
+        elif actual_size[0] < size[0]*.5 and actual_size[1] < size[1] *.5:
             status = 'toosmall'
-        print('returning', status)
         return status
 
     def add_label(self, label):
@@ -146,7 +160,7 @@ class StyleManager(object):
         self.font_ramps[name] = ramp
 
     def create_ramp_group(self, name, ramp):
-        ramp_group = RampGroup(ramp)
+        ramp_group = RampGroup(ramp, name)
         self.ramp_groups[name] = ramp_group
         return ramp_group
 

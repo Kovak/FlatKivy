@@ -76,14 +76,13 @@ ScreenManager:
 				text: 'test test test test test test test test test test just got here test test test test test test test test test test'
 				valign: 'middle'
 		        halign: 'center'
-		        font_ramp: ('test', '1')
+		        font_ramp_tuple: ('test', '1')
 				text_size: self.size
-			FlatLabel:
-				size: 300, 200
+
+			FlatCard:
 				pos: 400, 25
-				style: 'Display 1'
-				color_tuple: ('Grey', '1000')
-				text: 'test test test test test test test test test test '
-				valign: 'middle'
-		        halign: 'center'
-				text_size: self.size
+				size: root.size[0]*.4, root.size[1]*.4
+				text: 'other'
+				color_tuple: ('Purple', '800')
+				image_source: 'AstroPic1.jpg'
+				font_ramp_tuple: ('test2', '1')

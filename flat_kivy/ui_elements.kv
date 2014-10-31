@@ -40,7 +40,7 @@
 
 <FlatLabel>:
     font_size: '20dp'
-    color: app.get_color(root.color_tuple)
+    color: app.get_color(self.color_tuple)
     style_dict: app.get_style(self.style)
     ramp_group: app.get_ramp_group(self.font_ramp_tuple)
     disabled_color: (.3, .3, .3, .5)
@@ -275,7 +275,6 @@
     font_size: (self.size[0] + self.size[1]/2.)*self.scale
 
 
-
 <CheckBoxListItem>:
     orientation: 'horizontal'
     size_hint: (1.0, None)
@@ -300,3 +299,32 @@
         check_color_tuple: root.check_color_tuple
         color_tuple: root.checkbox_color_tuple
         check_scale: root.check_scale
+
+
+<FlatCard>:
+    orientation: 'vertical'
+    padding: [self.width*.025, self.width*.025]
+    color: app.get_color(self.color_tuple)
+    ripple_color: app.get_color(self.ripple_color_tuple)
+    canvas.before:
+        Color:
+            rgb: root.color_down if root.state == 'down' or root.disabled else root.color
+        Rectangle:
+            size: self.size
+            pos: self.pos
+    Image:
+        source: root.image_source
+        id: image
+        keep_ratio: True
+        allow_stretch: True
+        size_hint: (1., .8)
+    FlatLabel:
+        style: root.style
+        id: label
+        size_hint: (1., .2)
+        font_ramp_tuple: root.font_ramp_tuple
+        color_tuple: root.font_color_tuple
+        text_size: self.size
+        halign: 'center'
+        valign: 'middle'
+        text: root.text
