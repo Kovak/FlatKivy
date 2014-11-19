@@ -84,6 +84,70 @@
     font_size: '64dp'
 
 
+<FlatImageButton>:
+    color: app.get_color(self.color_tuple) 
+    ripple_color: app.get_color(self.ripple_color_tuple)
+    canvas.before:
+        Color:
+            rgb: root.color_down if root.state == 'down' or root.disabled else root.color
+        Rectangle:
+            size: self.size
+            pos: self.pos
+    StackLayout:
+        orientation: 'tb-lr'
+        id: label_space
+        padding: root.content_padding
+        spacing: root.content_spacing
+        Image:
+            id: icon
+            size_hint: (.25, 1.0)
+            source: root.icon_source
+            opacity: label.color[3]
+        FlatLabel:
+            size_hint: (.75, 1.0)
+            text: root.text
+            style: root.style
+            id: label
+            color_tuple: root.font_color_tuple
+            font_ramp_tuple: root.font_ramp_tuple
+            valign: 'middle'
+            halign: 'left'
+            text_size: self.size
+            font_size: root.font_size
+
+
+<-FlatImageButtonLeft>:
+    color: app.get_color(self.color_tuple) 
+    ripple_color: app.get_color(self.ripple_color_tuple)
+    canvas.before:
+        Color:
+            rgb: root.color_down if root.state == 'down' or root.disabled else root.color
+        Rectangle:
+            size: self.size
+            pos: self.pos
+    StackLayout:
+        orientation: 'tb-lr'
+        id: label_space
+        padding: root.content_padding
+        spacing: root.content_spacing
+        FlatLabel:
+            size_hint: (.75, 1.0)
+            text: root.text
+            style: root.style
+            id: label
+            color_tuple: root.font_color_tuple
+            font_ramp_tuple: root.font_ramp_tuple
+            valign: 'middle'
+            halign: 'right'
+            text_size: self.size
+            font_size: root.font_size
+        Image:
+            id: icon
+            size_hint: (.25, 1.0)
+            source: root.icon_source
+            opacity: label.color[3]
+
+
 <FlatIconButton>:
     color: app.get_color(self.color_tuple) 
     ripple_color: app.get_color(self.ripple_color_tuple)

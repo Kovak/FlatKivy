@@ -481,6 +481,28 @@ class FlatButton(GrabBehavior, LogBehavior, TouchRippleBehavior,
     def on_color(self, instance, value):
         self.color_down = [x*.7 for x in value]
 
+
+class FlatImageButton(GrabBehavior, LogBehavior, ButtonBehavior,
+    TouchRippleBehavior, ThemeBehavior, AnchorLayout):
+    color = ListProperty([1., 1., 1.])
+    color_down = ListProperty([.7, .7, .7])
+    text = StringProperty('')
+    icon_source = StringProperty('')
+    style = StringProperty(None, allownone=True)
+    font_size = NumericProperty(12)
+    image_color_tuple = ListProperty(['Grey', '1000'])
+    color_tuple = ListProperty(['Blue', '500'])
+    font_color_tuple = ListProperty(['Grey', '1000'])
+    font_ramp_tuple = ListProperty(None)
+    ripple_color_tuple = ListProperty(['Grey', '0000'])
+    content_padding = VariableListProperty([0., 0., 0., 0.])
+    content_spacing = VariableListProperty([0., 0.], length=2)
+
+    def on_color(self, instance, value):
+        self.color_down = [x*.7 for x in value]
+
+class FlatImageButtonLeft(FlatImageButton):
+    pass
     
 class FlatIconButton(GrabBehavior, LogBehavior, ButtonBehavior, 
     TouchRippleBehavior, ThemeBehavior, AnchorLayout):
@@ -546,10 +568,9 @@ class FlatLabel(GrabBehavior, ThemeBehavior, LogBehavior, Label):
             #self.shorten = not value['wrap']
 
     def on_ramp_group(self, instance, value):
-        print(value, 'in on ramp group')
         if value is not None:
             value.add_label(self)
-            value.check_fit_for_all_labels(value.current_style, 0)
+            value.trigger_fit_check()
 
     def on_touch_down(self, touch):
         log_manager = self.log_manager
@@ -564,16 +585,12 @@ class FlatLabel(GrabBehavior, ThemeBehavior, LogBehavior, Label):
     def on_texture(self, instance, value):
         ramp_group = self.ramp_group
         if ramp_group is not None and self._do_check_adjustments:
-            print('triggering check of label sizes', self.text,
-                self.font_ramp_tuple)
-            ramp_group.check_fit_for_all_labels(ramp_group.current_style, 0)
+            ramp_group.trigger_fit_check()
 
     def on_size(self, instance, value):
         ramp_group = self.ramp_group
         if ramp_group is not None and self._do_check_adjustments:
-            print('triggering check of label sizes', self.text, 
-                self.font_ramp_tuple)
-            ramp_group.check_fit_for_all_labels(ramp_group.current_style, 0)
+            ramp_group.trigger_fit_check()
 
 
 

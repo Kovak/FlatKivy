@@ -3,6 +3,8 @@ from kivy.uix.label import Label
 from kivy.event import EventDispatcher
 from ui_elements import FlatLabel
 from kivy.clock import Clock
+from kivy.properties import ListProperty
+import operator
 
 
 def get_style(style):
@@ -36,6 +38,7 @@ class FontStyle(object):
         self.alpha = alpha
 
 class RampGroup(EventDispatcher):
+    ignore_list = ListProperty(['default'])
 
     def __init__(self, font_ramp, name, **kwargs):
         super(RampGroup, self).__init__(**kwargs)
@@ -44,7 +47,9 @@ class RampGroup(EventDispatcher):
         self.name = name
         self.current_style = font_ramp[0]
         self._test_label = FlatLabel()
-        self.max_iterations = 2
+        self._cache = {}
+        self.max_iterations = 5
+        self.trigger_fit_check = Clock.create_trigger(self.check_fit_for_all_labels)
 
     def copy_label_to_test_label(self, label, style):
         test_label = self._test_label
@@ -57,64 +62,53 @@ class RampGroup(EventDispatcher):
         test_label._label.render()
         return test_label
 
-    def check_fit_for_all_labels(self, style, iterations):
-        tracked_labels = self.tracked_labels
-        returns = set()
-        r_add = returns.add
-        max_iterations = self.max_iterations
-        copy_label_to_test_label = self.copy_label_to_test_label
-        calculate_fit = self.calculate_fit
-        
-        if self.name in ['default', 'question_default']:
+    def check_fit_for_all_labels(self, dt):
+        if self.name in self.ignore_list:
             return
-        for tracked_label in tracked_labels:
-            if tracked_label.width <= 0 or tracked_label.height <= 0:
-                continue
-            test_label = copy_label_to_test_label(tracked_label, style)
+        tracked_labels = self.tracked_labels
+        font_ramp = self.font_ramp
+        return_counts = {}
+        copy_to_test = self.copy_label_to_test_label
+        for each in font_ramp:
+            return_counts[each] = {'fit_count': 0, 'big_count': 0, 
+                'small_count': 0}
+        for label in tracked_labels:
+            
+            for style in font_ramp:
+                return_count = return_counts[style]
+                test_label = copy_to_test(label, style)
+                fit = self.get_fit(test_label)
+                if fit == 'fits':
+                    return_count['fit_count'] += 1
+                elif fit == 'toobig':
+                    return_count['big_count'] += 1
+                elif fit =='toosmall':
+                    return_count['small_count'] += 1
+        #big_counts = []
+        #small_counts = []
+        fit_counts = []
+        #big_a = big_counts.append
+        #small_a = small_counts.append
+        fit_a = fit_counts.append
+        for style in return_counts:
+            #big_a((style, return_counts[style]['big_count']))
+            #small_a((style, return_counts[style]['small_count']))
+            fit_a((style, return_counts[style]['fit_count']))
+        sorted_fit = sorted(fit_counts, key=lambda x:x[1])
+        self.set_style(sorted_fit[-1][0])
+        # returns = set()
 
-            check_fit = calculate_fit(test_label)
-            print(tracked_label.size, tracked_label.text, check_fit)
-            r_add(check_fit)
-        print(returns, iterations, max_iterations)
-        if 'toobig' in returns and iterations < max_iterations:
-            self.current_style = style = self.get_next_smallest_style(style)
-            self.check_fit_for_all_labels(style, iterations+1)
-        elif 'toosmall' in returns and iterations < max_iterations:
-            self.current_style = style = self.get_next_largest_style(style)
-            self.check_fit_for_all_labels(style, iterations+1)
-        else:
-            self.set_style(style)
 
     def set_style(self, style):
         for tracked_label in self.tracked_labels:
-            tracked_label._do_check_adjustments = False
+            tracked_label._do_check_adjustments = True
             tracked_label.style = style
-        Clock.schedule_once(self.reset_track_adjustments, 1.)
+        #Clock.schedule_once(self.reset_track_adjustments, .025)
 
     def reset_track_adjustments(self, dt):
         for tracked_label in self.tracked_labels:
             tracked_label._do_check_adjustments = True
             
-
-
-    def get_next_smallest_style(self, style):
-        font_ramp = self.font_ramp
-        current_ind = font_ramp.index(style)
-        next_ind = current_ind+1
-        try:
-            return font_ramp[next_ind]
-        except:
-            return style
-
-    def get_next_largest_style(self, style):
-        font_ramp = self.font_ramp
-        current_ind = font_ramp.index(style)
-        next_ind = current_ind-1
-        try:
-            return font_ramp[next_ind]
-        except:
-            return style
-
     def calculate_fit(self, label):
         actual_size = label._label._internal_size
         size = label.size
@@ -125,6 +119,12 @@ class RampGroup(EventDispatcher):
         elif actual_size[0] < size[0]*.5 and actual_size[1] < size[1] *.5:
             status = 'toosmall'
         return status
+
+    def get_fit(self, label):
+        key = (label.text, (label.width, label.height), label.style)
+        if key not in self._cache:
+            self._cache[key] = self.calculate_fit(label)
+        return self._cache[key]
 
     def add_label(self, label):
         tracked_labels = self.tracked_labels
