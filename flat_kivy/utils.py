@@ -28,12 +28,17 @@ def get_icon_char(icon):
         return ''
 
 
-def get_rgba_color(color_tuple):
+def get_rgba_color(color_tuple, control_alpha=None):
     color, weight = color_tuple
     try:
-        return get_color_from_hex(colors[color][weight])
+        color = get_color_from_hex(colors[color][weight])
     except:
         print('Error: ' + color + weight + ' not found, set to default')
         return (1., 1., 1., 1.)
+    if control_alpha is None:
+        return color
+    else:
+        color[3] = control_alpha
+        return color
     
 

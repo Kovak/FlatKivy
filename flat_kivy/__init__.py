@@ -105,7 +105,7 @@ class FlatApp(App):
     def get_font(self, font_file):
         return construct_target_file_name(font_file, None)
 
-    def raise_error(self, error_title, error_text, auto_dismiss=True):
+    def raise_error(self, error_title, error_text, auto_dismiss=True, timeout=None):
         error_content = ErrorContent()
         error_popup = FlatPopup(
             content=error_content, size_hint=(.6, .4),
@@ -115,6 +115,10 @@ class FlatApp(App):
         dismiss_button = error_content.dismiss_button
         dismiss_button.bind(on_release=error_popup.dismiss)
         error_popup.open()
+        if timeout is not None:
+            def close_popup(dt):
+                error_popup.dismiss()
+            Clock.schedule_once(close_popup, timeout)
 
     def raise_option_dialogue(self, option_title, option_text, options, 
             callback, auto_dismiss=True):

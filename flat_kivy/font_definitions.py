@@ -58,8 +58,7 @@ class RampGroup(EventDispatcher):
         test_label.text = label.text
         test_label.halign = label.halign
         test_label.valign = label.valign
-        test_label.text_size = label.text_size
-        test_label._label.render()
+        test_label.texture_update()
         return test_label
 
     def check_fit_for_all_labels(self, dt):
@@ -68,7 +67,7 @@ class RampGroup(EventDispatcher):
         tracked_labels = self.tracked_labels
         font_ramp = self.font_ramp
         return_counts = {}
-        copy_to_test = self.copy_label_to_test_label
+        
         for each in font_ramp:
             return_counts[each] = {'fit_count': 0, 'big_count': 0, 
                 'small_count': 0}
@@ -76,8 +75,8 @@ class RampGroup(EventDispatcher):
             
             for style in font_ramp:
                 return_count = return_counts[style]
-                test_label = copy_to_test(label, style)
-                fit = self.get_fit(test_label)
+                
+                fit = self.get_fit(label, style)
                 if fit == 'fits':
                     return_count['fit_count'] += 1
                 elif fit == 'toobig':
@@ -93,9 +92,18 @@ class RampGroup(EventDispatcher):
         for style in return_counts:
             #big_a((style, return_counts[style]['big_count']))
             #small_a((style, return_counts[style]['small_count']))
-            fit_a((style, return_counts[style]['fit_count']))
-        sorted_fit = sorted(fit_counts, key=lambda x:x[1])
-        self.set_style(sorted_fit[-1][0])
+            fit_a((style, return_counts[style]['fit_count'], 
+                return_counts[style]['big_count'], 
+                return_counts[style]['small_count'],
+                font_ramp.index(style)))
+        sorted_fit = sorted(fit_counts, key=lambda x: (
+            x[1], -x[2], -x[3], -x[4]))
+        last = sorted_fit[-1]
+        if last[2] > 0 and last[1] == 0 and last[3] == 0:
+            style = font_ramp[-1]
+        else:
+            style = last[0]
+        self.set_style(style)
         # returns = set()
 
 
@@ -120,10 +128,11 @@ class RampGroup(EventDispatcher):
             status = 'toosmall'
         return status
 
-    def get_fit(self, label):
-        key = (label.text, (label.width, label.height), label.style)
+    def get_fit(self, label, style):
+        key = (label.text, (label.width, label.height), style)
         if key not in self._cache:
-            self._cache[key] = self.calculate_fit(label)
+            test_label = self.copy_label_to_test_label(label, style)
+            self._cache[key] = self.calculate_fit(test_label)
         return self._cache[key]
 
     def add_label(self, label):

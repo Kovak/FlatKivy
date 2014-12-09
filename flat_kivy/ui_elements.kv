@@ -1,3 +1,6 @@
+#:import ScrollEffect kivy.effects.scroll.ScrollEffect
+#:import randint random.randint
+
 <TextInputFocus>:
     text: texti.text
     texti: texti
@@ -265,9 +268,10 @@
     FlatLabel:
         text_size: self.size
         size_hint: (1.0, .8)
-        font_size: '14sp'
+        font_ramp_tuple: ('error_content' + str(randint(1,10000)), '1')
         valign: 'top'
         text: root.error_text
+        color_tuple: ('Gray', '1000')
     FlatButton:
         id: dismiss_button
         text: 'Ok'
@@ -341,16 +345,18 @@
 
 <CheckBoxListItem>:
     orientation: 'horizontal'
-    size_hint: (1.0, None)
-    height: '60dp'
     active: checkbox.active
     ripple_color: app.get_color(self.ripple_color_tuple)
+    spacing: '5dp'
     FlatLabel:
         id: label
         text: root.text
         size_hint: (.8, 1.0)
         color: app.get_color(root.font_color_tuple)
         style: root.style
+        halign: root.halign
+        font_ramp_tuple: root.font_ramp_tuple
+        valign: root.valign
         text_size: (root.size[0]*.8, None)
     FlatCheckBox:
         group: root.group
@@ -358,6 +364,7 @@
         no_interact: True
         size_hint: (None, 1.0)
         width: self.height
+        alpha: root.alpha
         outline_color_tuple: root.outline_color_tuple
         outline_size: root.outline_size
         check_color_tuple: root.check_color_tuple
@@ -367,7 +374,7 @@
 
 <FlatCard>:
     orientation: 'vertical'
-    padding: [self.width*.025, self.width*.025]
+    padding: [dp(5)]
     color: app.get_color(self.color_tuple)
     ripple_color: app.get_color(self.ripple_color_tuple)
     canvas.before:
@@ -381,14 +388,14 @@
         id: image
         keep_ratio: True
         allow_stretch: True
-        size_hint: (1., .8)
+        size_hint: (1., .7)
     FlatLabel:
         style: root.style
         id: label
-        size_hint: (1., .2)
+        size_hint: (1., .3)
         font_ramp_tuple: root.font_ramp_tuple
         color_tuple: root.font_color_tuple
         text_size: self.size
         halign: 'center'
-        valign: 'middle'
+        valign: 'top'
         text: root.text

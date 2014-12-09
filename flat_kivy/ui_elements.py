@@ -567,6 +567,11 @@ class FlatLabel(GrabBehavior, ThemeBehavior, LogBehavior, Label):
             self.color[3] = value.alpha
             #self.shorten = not value['wrap']
 
+    def on_font_ramp_tuple(self, instance, value):
+        if self.ramp_group is not None:
+            self.ramp_group.remove_widget(self)
+
+
     def on_ramp_group(self, instance, value):
         if value is not None:
             value.add_label(self)
@@ -728,6 +733,9 @@ class CheckBoxListItem(GrabBehavior, TouchRippleBehavior,
     outline_color_tuple = ListProperty(['Grey', '1000'])
     ripple_color_tuple = ListProperty(['Grey', '0000'])
     font_ramp_tuple = ListProperty(['default', '1'])
+    halign = StringProperty('left')
+    valign = StringProperty('bottom')
+    alpha = NumericProperty(None, allownone=True)
 
     def on_touch_down(self, touch):
         if self.collide_point(touch.x, touch.y):
