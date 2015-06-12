@@ -1,9 +1,13 @@
+
+
 from __future__ import unicode_literals, print_function
+
 __version__ = '0.0.1'
-import kivy
+
 from kivy.app import App
-from kivy.properties import (ObjectProperty, ListProperty, NumericProperty,
-    BooleanProperty)
+from kivy.properties import ObjectProperty, NumericProperty, BooleanProperty
+from kivy.clock import Clock
+
 from numpad import DecimalNumPad, NumPad
 from ui_elements import FlatPopup
 from ui_elements import (ErrorContent, OptionContent, FlatIconButton, 
@@ -12,7 +16,6 @@ from ui_elements import (ErrorContent, OptionContent, FlatIconButton,
 from utils import get_icon_char, get_rgba_color, construct_target_file_name
 from font_definitions import get_font_ramp_group, get_style, style_manager
 from dbinterface import DBInterface
-from kivy.clock import Clock
 
 
 def style_default(style_name):
