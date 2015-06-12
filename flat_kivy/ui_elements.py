@@ -73,7 +73,6 @@ class LogManager(EventDispatcher):
     touch_id = NumericProperty(0)
     hour = NumericProperty(None)
     log_path = StringProperty('default_log_dir')
-    
 
     def __init__(self, log_path, **kwargs):
         super(LogManager, self).__init__(**kwargs)
@@ -88,9 +87,11 @@ class LogManager(EventDispatcher):
     def on_device_id(self, instance, value):
         print('in on device id', value)
 
+
 class LogNoTouchBehavior(object):
     log_manager = LogManager(
         construct_target_file_name('data/logs/', __file__))
+
 
 class LogBehavior(object):
     log_manager = LogManager(
@@ -553,11 +554,9 @@ class FlatLabel(GrabBehavior, ThemeBehavior, LogBehavior, Label):
     ramp_group = ObjectProperty(None, allownone=True)
     font_ramp_tuple = ListProperty(None)
 
-
     def __init__(self, **kwargs):
         self._do_check_adjustments = True
         super(FlatLabel, self).__init__(**kwargs)
-
 
     def on_style_dict(self, instance, value):
         if value is not None:
@@ -571,7 +570,6 @@ class FlatLabel(GrabBehavior, ThemeBehavior, LogBehavior, Label):
     def on_font_ramp_tuple(self, instance, value):
         if self.ramp_group is not None:
             self.ramp_group.remove_widget(self)
-
 
     def on_ramp_group(self, instance, value):
         if value is not None:
@@ -599,10 +597,10 @@ class FlatLabel(GrabBehavior, ThemeBehavior, LogBehavior, Label):
             ramp_group.trigger_fit_check()
 
 
-
 class FlatIcon(FlatLabel):
     color_tuple = ListProperty(['Grey', '0000'])
     icon = StringProperty('')
+
 
 class Check(FlatIcon):
     scale = NumericProperty(1.0)
@@ -681,10 +679,11 @@ class FlatCheckBox(GrabBehavior, TouchRippleBehavior,
     def __init__(self, **kwargs):
         super(FlatCheckBox, self).__init__(**kwargs)
         self.check = check = Check(scale=self.check_scale, 
-            color_tuple=self.check_color_tuple)
-        self.bind(pos=check.setter('pos'), size=check.setter('size'),
-            check_scale=check.setter('scale'), 
-            check_color_tuple=check.setter('color_tuple'))
+                                   color_tuple=self.check_color_tuple)
+        self.bind(pos=check.setter('pos'),
+                  size=check.setter('size'),
+                  check_scale=check.setter('scale'),
+                  check_color_tuple=check.setter('color_tuple'))
 
     def on_active(self, instance, value):
         check = self.check
