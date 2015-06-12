@@ -1,18 +1,20 @@
+
+
 from __future__ import unicode_literals, print_function
-from kivy.utils import platform
+from weakref import ref
+
+
 from kivy.lang import Builder
 from utils import construct_target_file_name, get_metric_conversion
 
 Builder.load_file(construct_target_file_name('ui_elements.kv', __file__))
 
 from kivy.uix.togglebutton import ToggleButton
-#from kivy.uix.checkbox import CheckBox
 from kivy.uix.stacklayout import StackLayout
 from kivy.uix.gridlayout import GridLayout
 from kivy.properties import (ObjectProperty, StringProperty, OptionProperty,
     DictProperty, ListProperty, BooleanProperty, NumericProperty, 
     VariableListProperty)
-from kivy.uix.image import Image
 from kivy.uix.boxlayout import BoxLayout
 from kivy.uix.anchorlayout import AnchorLayout
 from kivy.animation import Animation
@@ -21,15 +23,14 @@ from kivy.uix.widget import Widget
 from kivy.uix.scrollview import ScrollView
 from kivy.uix.popup import Popup
 from kivy.uix.textinput import TextInput
-from kivy.app import App
-from weakref import ref
-from kivy.graphics import (StencilPush, StencilPop, StencilUse, StencilUnUse, 
-    Rectangle, Ellipse, Color, ScissorPush, ScissorPop)
-from dbinterface import DBInterface
+from kivy.graphics import Ellipse, Color, ScissorPush, ScissorPop
 from kivy.event import EventDispatcher
 from kivy.uix.screenmanager import Screen
 from kivy.clock import Clock
 from kivy.app import App
+
+from dbinterface import DBInterface
+
 
 class GrabBehavior(object):
     last_touch = ObjectProperty(None)
