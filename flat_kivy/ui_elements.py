@@ -440,7 +440,8 @@ class FlatTextInput(GrabBehavior, TouchRippleBehavior, TextInput):
         TextInput.on_touch_down(self, touch)
         super(FlatTextInput, self).on_touch_down(touch)
 
-class FlatScreen(GrabBehavior, LogNoTouchBehavior, Screen):
+
+class FlatScreen(GrabBehavior, Screen):
 
     def on_enter(self, *args):
         super(FlatScreen, self).on_enter(*args)
@@ -468,8 +469,8 @@ class FlatScrollView(ScrollView):
         self.scroll_y = 1.0
 
 
-class FlatButton(GrabBehavior, LogBehavior, TouchRippleBehavior, 
-    ThemeBehavior, ButtonBehavior, AnchorLayout):
+class FlatButton(GrabBehavior, TouchRippleBehavior,
+                 ThemeBehavior, ButtonBehavior, AnchorLayout):
     color = ListProperty([1., 1., 1.])
     color_down = ListProperty([.7, .7, .7])
     text = StringProperty('')
@@ -484,8 +485,8 @@ class FlatButton(GrabBehavior, LogBehavior, TouchRippleBehavior,
         self.color_down = [x*.7 for x in value]
 
 
-class FlatImageButton(GrabBehavior, LogBehavior, ButtonBehavior,
-    TouchRippleBehavior, ThemeBehavior, AnchorLayout):
+class FlatImageButton(GrabBehavior, ButtonBehavior, TouchRippleBehavior,
+                      ThemeBehavior, AnchorLayout):
     color = ListProperty([1., 1., 1.])
     color_down = ListProperty([.7, .7, .7])
     text = StringProperty('')
@@ -503,11 +504,13 @@ class FlatImageButton(GrabBehavior, LogBehavior, ButtonBehavior,
     def on_color(self, instance, value):
         self.color_down = [x*.7 for x in value]
 
+
 class FlatImageButtonLeft(FlatImageButton):
     pass
-    
-class FlatIconButton(GrabBehavior, LogBehavior, ButtonBehavior, 
-    TouchRippleBehavior, ThemeBehavior, AnchorLayout):
+
+
+class FlatIconButton(GrabBehavior, ButtonBehavior, TouchRippleBehavior,
+                     ThemeBehavior, AnchorLayout):
     color = ListProperty([1., 1., 1.])
     color_down = ListProperty([.7, .7, .7])
     text = StringProperty('')
@@ -529,8 +532,9 @@ class FlatIconButton(GrabBehavior, LogBehavior, ButtonBehavior,
 class FlatIconButtonLeft(FlatIconButton):
     pass
 
-class FlatCard(GrabBehavior, ThemeBehavior, LogBehavior, TouchRippleBehavior,
-    ButtonBehavior, BoxLayout):
+
+class FlatCard(GrabBehavior, ThemeBehavior, TouchRippleBehavior,
+               ButtonBehavior, BoxLayout):
     image_source = StringProperty(None)
     style = StringProperty(None, allownone=True)
     color_tuple = ListProperty(['Blue', '500'])
@@ -545,7 +549,7 @@ class FlatCard(GrabBehavior, ThemeBehavior, LogBehavior, TouchRippleBehavior,
         self.color_down = [x*.7 for x in value]
 
 
-class FlatLabel(GrabBehavior, ThemeBehavior, LogBehavior, Label):
+class FlatLabel(GrabBehavior, ThemeBehavior, Label):
     text = StringProperty(None, allownone=True)
     color_tuple = ListProperty(['Grey', '0000'])
     style = StringProperty(None, allownone=True)
@@ -644,7 +648,7 @@ class OptionContent(GridLayout):
 
 
 class FlatToggleButton(GrabBehavior, ToggleButtonBehavior, 
-    TouchRippleBehavior, ThemeBehavior, AnchorLayout):
+                       TouchRippleBehavior, ThemeBehavior, AnchorLayout):
     color = ListProperty([1., 1., 1.])
     color_down = ListProperty([.7, .7, .7])
     text = StringProperty('')
@@ -665,8 +669,9 @@ class FlatToggleButton(GrabBehavior, ToggleButtonBehavior,
         else:
             super(FlatToggleButton, self).on_touch_down(touch)
 
+
 class FlatCheckBox(GrabBehavior, TouchRippleBehavior, 
-    LogBehavior, ThemeBehavior, CheckBox):
+                   ThemeBehavior, CheckBox):
     check = ObjectProperty(None)
     no_interact = BooleanProperty(False)
     check_scale = NumericProperty(.5)
@@ -720,7 +725,7 @@ class TextInputFocus(StackLayout):
     
 
 class CheckBoxListItem(GrabBehavior, TouchRippleBehavior, 
-    ThemeBehavior, BoxLayout):
+                       ThemeBehavior, BoxLayout):
     text = StringProperty(None)
     group = StringProperty(None)
     outline_size = NumericProperty(5)
