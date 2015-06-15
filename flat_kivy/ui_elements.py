@@ -434,7 +434,7 @@ class CheckBox(ToggleButtonBehavior, Widget):
 
 
 class FlatTextInput(GrabBehavior, TouchRippleBehavior, TextInput):
-    ripple_color_tuple = ListProperty(['Grey', '0000'])
+    ripple_color_tuple = ListProperty(['Grey', '1000'])
 
     def on_touch_down(self, touch):
         TextInput.on_touch_down(self, touch)
@@ -496,7 +496,7 @@ class FlatImageButton(GrabBehavior, LogBehavior, ButtonBehavior,
     color_tuple = ListProperty(['Blue', '500'])
     font_color_tuple = ListProperty(['Grey', '1000'])
     font_ramp_tuple = ListProperty(None)
-    ripple_color_tuple = ListProperty(['Grey', '0000'])
+    ripple_color_tuple = ListProperty(['Grey', '1000'])
     content_padding = VariableListProperty([0., 0., 0., 0.])
     content_spacing = VariableListProperty([0., 0.], length=2)
 
@@ -518,7 +518,7 @@ class FlatIconButton(GrabBehavior, LogBehavior, ButtonBehavior,
     color_tuple = ListProperty(['Blue', '500'])
     font_color_tuple = ListProperty(['Grey', '1000'])
     font_ramp_tuple = ListProperty(None)
-    ripple_color_tuple = ListProperty(['Grey', '0000'])
+    ripple_color_tuple = ListProperty(['Grey', '1000'])
     content_padding = VariableListProperty([0., 0., 0., 0.])
     content_spacing = VariableListProperty([0., 0.], length=2)
 
@@ -536,7 +536,7 @@ class FlatCard(GrabBehavior, ThemeBehavior, LogBehavior, TouchRippleBehavior,
     color_tuple = ListProperty(['Blue', '500'])
     font_color_tuple = ListProperty(['Grey', '1000'])
     font_ramp_tuple = ListProperty(None)
-    ripple_color_tuple = ListProperty(['Grey', '0000'])
+    ripple_color_tuple = ListProperty(['Grey', '1000'])
     text = StringProperty(None)
     color = ListProperty([1., 1., 1.])
     color_down = ListProperty([.7, .7, .7])
@@ -650,7 +650,7 @@ class FlatToggleButton(GrabBehavior, ToggleButtonBehavior,
     text = StringProperty('')
     color_tuple = ListProperty(['Blue', '500'])
     font_color_tuple = ListProperty(['Grey', '1000'])
-    ripple_color_tuple = ListProperty(['Grey', '0000'])
+    ripple_color_tuple = ListProperty(['Grey', '1000'])
     font_ramp_tuple = ListProperty(None)
     no_up = BooleanProperty(False)
     style = StringProperty(None, allownone=True)
@@ -674,7 +674,7 @@ class FlatCheckBox(GrabBehavior, TouchRippleBehavior,
     color_tuple = ListProperty(['Grey', '0000'])
     check_color_tuple = ListProperty(['Grey', '1000'])
     outline_color_tuple = ListProperty(['Grey', '1000'])
-    ripple_color_tuple = ListProperty(['Grey', '0000'])
+    ripple_color_tuple = ListProperty(['Grey', '1000'])
 
     def __init__(self, **kwargs):
         super(FlatCheckBox, self).__init__(**kwargs)
@@ -731,7 +731,7 @@ class CheckBoxListItem(GrabBehavior, TouchRippleBehavior,
     check_color_tuple = ListProperty(['Grey', '1000'])
     checkbox_color_tuple = ListProperty(['Grey', '0000'])
     outline_color_tuple = ListProperty(['Grey', '1000'])
-    ripple_color_tuple = ListProperty(['Grey', '0000'])
+    ripple_color_tuple = ListProperty(['Grey', '1000'])
     font_ramp_tuple = ListProperty(['default', '1'])
     halign = StringProperty('left')
     valign = StringProperty('bottom')
