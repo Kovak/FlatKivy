@@ -471,17 +471,17 @@ class FlatScrollView(ScrollView):
 class FlatButton(GrabBehavior, LogBehavior, TouchRippleBehavior, 
     ThemeBehavior, ButtonBehavior, AnchorLayout):
     color = ListProperty([1., 1., 1.])
-    color_down = ListProperty([.7, .7, .7])
+    color_down = ListProperty([.9, .9, .9])
     text = StringProperty('')
     style = StringProperty(None, allownone=True)
     color_tuple = ListProperty(['Blue', '500'])
     font_color_tuple = ListProperty(['Grey', '1000'])
-    ripple_color_tuple = ListProperty(['Grey', '0000'])
+    ripple_color_tuple = ListProperty(['Grey', '1000'])
     font_ramp_tuple = ListProperty(None)
     font_size = NumericProperty(12)
     
     def on_color(self, instance, value):
-        self.color_down = [x*.7 for x in value]
+        self.color_down = [x*.9 for x in value]
 
 
 class FlatImageButton(GrabBehavior, LogBehavior, ButtonBehavior,
