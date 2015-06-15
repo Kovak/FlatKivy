@@ -323,4 +323,4 @@ class FlatApp(App):
 
 
 if __name__ == '__main__':
-    ExampleFlatApp().run()
+    FlatApp().run()
