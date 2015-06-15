@@ -471,7 +471,7 @@ class FlatScrollView(ScrollView):
 class FlatButton(GrabBehavior, LogBehavior, TouchRippleBehavior, 
     ThemeBehavior, ButtonBehavior, AnchorLayout):
     color = ListProperty([1., 1., 1.])
-    color_down = ListProperty([.9, .9, .9])
+    color_down = ListProperty([.7, .7, .7])
     text = StringProperty('')
     style = StringProperty(None, allownone=True)
     color_tuple = ListProperty(['Blue', '500'])
@@ -481,7 +481,7 @@ class FlatButton(GrabBehavior, LogBehavior, TouchRippleBehavior,
     font_size = NumericProperty(12)
     
     def on_color(self, instance, value):
-        self.color_down = [x*.9 for x in value]
+        self.color_down = [x*.7 for x in value]
 
 
 class FlatImageButton(GrabBehavior, LogBehavior, ButtonBehavior,
@@ -505,7 +505,7 @@ class FlatImageButton(GrabBehavior, LogBehavior, ButtonBehavior,
 
 class FlatImageButtonLeft(FlatImageButton):
     pass
-    
+
 class FlatIconButton(GrabBehavior, LogBehavior, ButtonBehavior, 
     TouchRippleBehavior, ThemeBehavior, AnchorLayout):
     color = ListProperty([1., 1., 1.])
