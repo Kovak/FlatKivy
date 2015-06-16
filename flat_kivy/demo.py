@@ -104,12 +104,14 @@ Builder.load_string('''
         FlatSlider:
             id: hor_slider
             orientation: 'horizontal'
+            min: 10
             value: ver_slider.value
             theme: ('green', 'main')
 
         FlatSlider:
             id: ver_slider
             orientation: 'vertical'
+            min: 10
             value: hor_slider.value
             theme: ('green', 'main')
 

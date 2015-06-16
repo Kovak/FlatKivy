@@ -866,7 +866,7 @@ class FlatSlider(Slider, ThemeBehavior):
         self.update()
 
     def update(self, *ar):
-        per = self.value / float(self.max - self.min)
+        per = (self.value - self.min) / float(self.max - self.min)
         hs = self.handle_size
 
         if self.orientation == 'horizontal':
