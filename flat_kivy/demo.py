@@ -89,6 +89,7 @@ Builder.load_string('''
             text: 'popup'
             theme: ('green', 'accent')
             on_release: popup_demo.open()
+            popup_demo: popup_demo.__self__
 
         FlatPopup:
             id: popup_demo
