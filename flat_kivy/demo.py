@@ -102,6 +102,19 @@ Builder.load_string('''
                 theme: ('green', 'main')
 
         FlatSlider:
+            id: hor_slider
+            orientation: 'horizontal'
+            value: ver_slider.value
+
+        FlatSlider:
+            id: ver_slider
+            orientation: 'vertical'
+            value: hor_slider.value
+
+        FlatSlider:
+            value: hor_slider.value
+            orientation: 'horizontal'
+            disabled: True
 ''')
 
 
