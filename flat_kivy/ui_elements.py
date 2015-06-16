@@ -805,6 +805,7 @@ class CheckBoxListItem(GrabBehavior, TouchRippleBehavior,
 class FlatSlider(Slider, ThemeBehavior):
     bar_color = ListProperty((.5, .5, .5, 1.))
     bar_fill_color = ListProperty((.8, .8, .8, 1.))
+    handle_accent_color = ListProperty((1., 1., 1., 1.))
     handle_size = NumericProperty('28sp')
     handle_image_normal = StringProperty(
         construct_target_file_name('data/images/slider_handle_normal.png',
@@ -815,6 +816,7 @@ class FlatSlider(Slider, ThemeBehavior):
 
     bar_color_tuple = ListProperty(('Gray', '800'))
     bar_fill_color_tuple = ListProperty(('Blue', '500'))
+    handle_accent_color_tuple = ListProperty(('Gray', '0000'))
 
     def __init__(self, **kw):
         super(FlatSlider, self).__init__(**kw)
@@ -829,9 +831,11 @@ class FlatSlider(Slider, ThemeBehavior):
         self.canvas.clear()
         bc = self.bar_color[:]
         bfc = self.bar_fill_color[:]
+        hac = self.handle_accent_color[:]
         if self.disabled:
             bc = [i * .6 for i in bc]
             bfc = [i * .6 for i in bfc]
+            hac = [i * .6 for i in hac]
 
         bw = get_metric_conversion((4, 'sp'))
         hs = self.handle_size
@@ -855,6 +859,7 @@ class FlatSlider(Slider, ThemeBehavior):
                                            size=(bw, 0))
 
             source = (self.handle_image_disabled if self.disabled else self.handle_image_normal)
+            Color(*hac)
             self._handle = Rectangle(size=(hs, hs),
                                      source=source)
 

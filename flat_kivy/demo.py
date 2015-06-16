@@ -141,6 +141,7 @@ class MyFlatApp(FlatApp):
                 },
             'FlatSlider': {
                 'bar_fill_color_tuple': ('LightGreen', '500'),
+                'handle_accent_color_tuple': ('LightGreen', '200'),
                 }
             }
 
