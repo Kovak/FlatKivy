@@ -161,17 +161,40 @@ class ButtonBehavior(object):
     :attr:`state` is an :class:`~kivy.properties.OptionProperty`.
     '''
 
+    pressed_time = NumericProperty(0.085)
+    '''The minimum amount of time (in seconds) the button will be in the down
+    state. On faster machines, the button can be pressed and released so
+    quickly that the user cannot see the button in the down state. Set this
+    parameter to non-zero to delay the release to provide better feedback.
+
+    :attr:`state` is an :class:`~kivy.properties.NumericProperty`.
+    '''
 
     def __init__(self, **kwargs):
         self.register_event_type(b'on_press')
         self.register_event_type(b'on_release')
         super(ButtonBehavior, self).__init__(**kwargs)
+        self._pressed_at_time = 0
 
     def _do_press(self):
         self.state = 'down'
+        self._pressed_at_time = Clock.time()
+        self.dispatch(b'on_press')
 
     def _do_release(self):
+        # If the button has not been pressed for pressed_time seconds,
+        # instead of releasing it right away schedule the release.
+        delta = Clock.time() - self._pressed_at_time
+
+        if delta > self.pressed_time:
+            self._do_release_actual()
+        else:
+            Clock.schedule_once(self._do_release_actual,
+                                self.pressed_time - delta)
+
+    def _do_release_actual(self, *ar):
         self.state = 'normal'
+        self.dispatch(b'on_release')
 
     def on_touch_down(self, touch):
         if self in touch.ud:
@@ -190,7 +213,6 @@ class ButtonBehavior(object):
                             'touches', touch_id, 
                             'button_pressed', self.text, do_timestamp=True)
             self._do_press()
-            self.dispatch(b'on_press')
         return super(ButtonBehavior, self).on_touch_down(touch)
 
     def on_touch_move(self, touch):
@@ -213,7 +235,6 @@ class ButtonBehavior(object):
                             'touches', touch_id, 'button_released', 
                             self.text, do_timestamp=True)
             self._do_release()
-            self.dispatch(b'on_release')
         return super(ButtonBehavior, self).on_touch_up(touch)
 
     def on_press(self):
@@ -234,15 +255,17 @@ class ButtonBehavior(object):
         .. versionadded:: 1.8.0
         '''
         self._do_press()
-        self.dispatch('on_press')
 
-        def trigger_release(dt):
+        def trigger_release(self, dt):
+            saved_pressed_time = self.pressed_time
+            self.pressed_time = 0.0
             self._do_release()
-            self.dispatch('on_release')
+            self.pressed_time = saved_pressed_time
+
         if not duration:
             trigger_release(0)
         else:
-            Clock.schedule_once(trigger_release, duration)
+            Clock.schedule_once(self.trigger_release, duration)
 
 
 class ToggleButtonBehavior(ButtonBehavior):
