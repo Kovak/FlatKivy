@@ -813,6 +813,9 @@ class FlatSlider(Slider):
         construct_target_file_name('data/images/slider_handle_disabled.png',
         __file__))
 
+    bar_color_tuple = ListProperty(('Gray', '800'))
+    bar_fill_color_tuple = ListProperty(('Blue', '500'))
+
     def __init__(self, **kw):
         super(FlatSlider, self).__init__(**kw)
         self.bind(size=self.redraw, pos=self.redraw, orientation=self.redraw,
