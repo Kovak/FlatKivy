@@ -105,16 +105,19 @@ Builder.load_string('''
             id: hor_slider
             orientation: 'horizontal'
             value: ver_slider.value
+            theme: ('green', 'main')
 
         FlatSlider:
             id: ver_slider
             orientation: 'vertical'
             value: hor_slider.value
+            theme: ('green', 'main')
 
         FlatSlider:
             value: hor_slider.value
             orientation: 'horizontal'
             disabled: True
+            theme: ('green', 'main')
 ''')
 
 
@@ -136,6 +139,9 @@ class MyFlatApp(FlatApp):
             'FlatLabel': {
                 'style': 'Button',
                 },
+            'FlatSlider': {
+                'bar_fill_color_tuple': ('LightGreen', '500'),
+                }
             }
 
         accent = {

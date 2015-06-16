@@ -802,7 +802,7 @@ class CheckBoxListItem(GrabBehavior, TouchRippleBehavior,
         self.ids.checkbox._toggle_active()
 
 
-class FlatSlider(Slider):
+class FlatSlider(Slider, ThemeBehavior):
     bar_color = ListProperty((.5, .5, .5, 1.))
     bar_fill_color = ListProperty((.8, .8, .8, 1.))
     handle_size = NumericProperty('28sp')
