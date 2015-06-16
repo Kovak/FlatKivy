@@ -100,6 +100,8 @@ Builder.load_string('''
             FlatButton:
                 text: 'just a button in here'
                 theme: ('green', 'main')
+
+        FlatSlider:
 ''')
 
 

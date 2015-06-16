@@ -19,6 +19,7 @@ from kivy.uix.boxlayout import BoxLayout
 from kivy.uix.anchorlayout import AnchorLayout
 from kivy.animation import Animation
 from kivy.uix.label import Label
+from kivy.uix.slider import Slider
 from kivy.uix.widget import Widget
 from kivy.uix.scrollview import ScrollView
 from kivy.uix.popup import Popup
@@ -799,3 +800,7 @@ class CheckBoxListItem(GrabBehavior, TouchRippleBehavior,
 
     def toggle_checkbox(self):
         self.ids.checkbox._toggle_active()
+
+
+class FlatSlider(Slider):
+    pass
