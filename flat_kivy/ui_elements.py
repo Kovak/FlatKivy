@@ -803,4 +803,7 @@ class CheckBoxListItem(GrabBehavior, TouchRippleBehavior,
 
 
 class FlatSlider(Slider):
-    pass
+    def __init__(self, **kw):
+        super(FlatSlider, self).__init__(**kw)
+        self._theme_path = construct_target_file_name('data/theme', __file__)
+
