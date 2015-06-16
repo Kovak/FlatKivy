@@ -23,7 +23,17 @@ from kivy.uix.widget import Widget
 from kivy.uix.scrollview import ScrollView
 from kivy.uix.popup import Popup
 from kivy.uix.textinput import TextInput
-from kivy.graphics import Ellipse, Color, ScissorPush, ScissorPop
+from kivy.graphics import Ellipse, Color
+
+try:
+    from kivy.graphics import (ScissorPush, ScissorPop)
+except ImportError:
+    _has_scissor_instr = False
+    from kivy.graphics import (StencilPush, StencilPop, StencilUse,
+                               StencilUnUse, Color, Rectangle)
+else:
+    _has_scissor_instr = True
+
 from kivy.event import EventDispatcher
 from kivy.uix.screenmanager import Screen
 from kivy.clock import Clock
@@ -372,13 +382,32 @@ class TouchRippleBehavior(object):
                 x,y = self.to_window(*self.pos)
                 width, height = self.size
                 #In python 3 the int cast will be unnecessary
-                ScissorPush(x=int(round(x)), y=int(round(y)),
-                            width=int(round(width)), height=int(round(height)))
+                pos = (int(round(x)), int(round(y)))
+                size = (int(round(width)), int(round(height)))
+
+                if _has_scissor_instr:
+                    ScissorPush(x=pos[0], y=pos[1],
+                                width=size[0], height=size[1])
+                else:
+                    StencilPush()
+                    Rectangle(pos=(int(round(x)), int(round(y))),
+                              size=(int(round(width)), int(round(height))))
+
+                    StencilUse()
+
                 self.col_instruction = Color(rgba=self.ripple_color)
                 self.ellipse = Ellipse(size=(ripple_rad, ripple_rad),
                                        pos=(ripple_pos[0] - ripple_rad/2.,
                                             ripple_pos[1] - ripple_rad/2.))
-                ScissorPop()
+
+                if _has_scissor_instr:
+                    ScissorPop()
+                else:
+                    StencilUnUse()
+                    Rectangle(pos=(int(round(x)), int(round(y))),
+                              size=(int(round(width)), int(round(height))))
+                    StencilPop()
+
             self.bind(ripple_color=self.set_color, ripple_pos=self.set_ellipse,
                       ripple_rad=self.set_ellipse)
         return super(TouchRippleBehavior, self).on_touch_down(touch)
