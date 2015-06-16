@@ -807,7 +807,7 @@ class FlatSlider(Slider):
     bar_fill_color = ListProperty((.8, .8, .8, 1.))
     handle_size = NumericProperty('28sp')
     handle_image_normal = StringProperty(
-        construct_target_file_name('data/images/slider_handle_noraml.png',
+        construct_target_file_name('data/images/slider_handle_normal.png',
         __file__))
     handle_image_disabled = StringProperty(
         construct_target_file_name('data/images/slider_handle_disabled.png',
