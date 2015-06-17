@@ -521,20 +521,36 @@ class FlatScrollView(ScrollView):
         self.scroll_y = 1.0
 
 
-class FlatButton(GrabBehavior, LogBehavior, TouchRippleBehavior, 
-    ThemeBehavior, ButtonBehavior, AnchorLayout):
+class FlatButtonBase(GrabBehavior, LogBehavior, TouchRippleBehavior,
+                     ThemeBehavior):
     color = ListProperty([1., 1., 1.])
     color_down = ListProperty([.7, .7, .7])
+    border_size = ListProperty([0, 0, 0, 0])
     text = StringProperty('')
     style = StringProperty(None, allownone=True)
-    color_tuple = ListProperty(['Blue', '500'])
+    color_tuple = ListProperty(['Grey', '500'])
     font_color_tuple = ListProperty(['Grey', '1000'])
     ripple_color_tuple = ListProperty(['Grey', '1000'])
     font_ramp_tuple = ListProperty(None)
     font_size = NumericProperty(12)
-    
+
     def on_color(self, instance, value):
         self.color_down = [x*.7 for x in value]
+
+
+class FlatButton(FlatButtonBase, ButtonBehavior, AnchorLayout):
+    pass
+
+
+class RaisedWidget(object):
+    border = ListProperty([16, 16, 16, 16])
+    border_size = ListProperty([2, 3, 4, 3])
+    border_image = StringProperty(
+        construct_target_file_name('data/images/button_raised.png', __file__))
+
+
+class RaisedFlatButton(RaisedWidget, FlatButton):
+    pass
 
 
 class FlatImageButton(GrabBehavior, LogBehavior, ButtonBehavior,
@@ -696,20 +712,8 @@ class OptionContent(GridLayout):
         self.dismiss_func()
 
 
-class FlatToggleButton(GrabBehavior, ToggleButtonBehavior, 
-    TouchRippleBehavior, ThemeBehavior, AnchorLayout):
-    color = ListProperty([1., 1., 1.])
-    color_down = ListProperty([.7, .7, .7])
-    text = StringProperty('')
-    color_tuple = ListProperty(['Blue', '500'])
-    font_color_tuple = ListProperty(['Grey', '1000'])
-    ripple_color_tuple = ListProperty(['Grey', '1000'])
-    font_ramp_tuple = ListProperty(None)
+class FlatToggleButton(FlatButtonBase, ToggleButtonBehavior, AnchorLayout):
     no_up = BooleanProperty(False)
-    style = StringProperty(None, allownone=True)
-
-    def on_color(self, instance, value):
-        self.color_down = [x*.7 for x in value]
 
     def on_touch_down(self, touch):
         if self.no_up:
@@ -717,6 +721,11 @@ class FlatToggleButton(GrabBehavior, ToggleButtonBehavior,
                 super(FlatToggleButton, self).on_touch_down(touch)
         else:
             super(FlatToggleButton, self).on_touch_down(touch)
+
+
+class RaisedFlatToggleButton(RaisedWidget, FlatToggleButton):
+    pass
+
 
 class FlatCheckBox(GrabBehavior, TouchRippleBehavior, 
     LogBehavior, ThemeBehavior, CheckBox):

@@ -16,7 +16,7 @@ Builder.load_string('''
         spacing: '5dp'
         canvas.before:
             Color:
-                rgb: .1,.1,.1
+                rgb: 1,1,1
             Rectangle:
                 pos: self.pos
                 size: self.size
@@ -31,12 +31,12 @@ Builder.load_string('''
             theme: ('green', 'accent')
 
         FlatToggleButton:
-            text: 'toggle button 1'
+            text: 'toggle button'
             group: 'toggle'
             theme: ('green', 'accent')
 
-        FlatToggleButton:
-            text: 'toggle button 2'
+        RaisedFlatToggleButton:
+            text: 'raised toggle button'
             group: 'toggle'
             theme: ('green', 'accent')
 
@@ -85,7 +85,7 @@ Builder.load_string('''
                     FlatLabel:
                         text: '6'
 
-        FlatButton:
+        RaisedFlatButton:
             text: 'popup'
             theme: ('green', 'accent')
             on_release: popup_demo.open()
@@ -97,9 +97,15 @@ Builder.load_string('''
             size_hint: .6,.6
             on_parent: if self.parent: self.parent.remove_widget(self)
 
-            FlatButton:
-                text: 'just a button in here'
-                theme: ('green', 'main')
+            BoxLayout:
+                spacing: '5dp'
+                padding: '5dp'
+                RaisedFlatButton:
+                    text: 'just a button in here'
+                    theme: ('green', 'main')
+                RaisedFlatButton:
+                    text: 'just a button in here'
+                    theme: ('green', 'main')
 
         FlatSlider:
             id: hor_slider
