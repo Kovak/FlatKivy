@@ -14,7 +14,7 @@
    id="svg2"
    version="1.1"
    inkscape:version="0.48.4 r9939"
-   sodipodi:docname="New document 1">
+   sodipodi:docname="slider_handles.svg">
   <defs
      id="defs4">
     <filter
@@ -25,6 +25,15 @@
          stdDeviation="4.1000001"
          id="feGaussianBlur3771" />
     </filter>
+    <filter
+       color-interpolation-filters="sRGB"
+       inkscape:collect="always"
+       id="filter3769-7">
+      <feGaussianBlur
+         inkscape:collect="always"
+         stdDeviation="4.1000001"
+         id="feGaussianBlur3771-8" />
+    </filter>
   </defs>
   <sodipodi:namedview
      id="base"
@@ -34,13 +43,13 @@
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
      inkscape:zoom="2.8"
-     inkscape:cx="268.61021"
+     inkscape:cx="205.39592"
      inkscape:cy="643.39937"
      inkscape:document-units="px"
      inkscape:current-layer="layer1"
      showgrid="false"
-     inkscape:window-width="1600"
-     inkscape:window-height="815"
+     inkscape:window-width="1920"
+     inkscape:window-height="1025"
      inkscape:window-x="0"
      inkscape:window-y="27"
      inkscape:window-maximized="1" />
@@ -60,6 +69,19 @@
      inkscape:label="Layer 1"
      inkscape:groupmode="layer"
      id="layer1">
+    <path
+       sodipodi:type="arc"
+       style="opacity:0.4;fill:#808080;fill-opacity:1;fill-rule:evenodd;stroke:none;filter:url(#filter3769-7)"
+       id="path2985-2"
+       sodipodi:cx="312.85715"
+       sodipodi:cy="393.79074"
+       sodipodi:rx="58.57143"
+       sodipodi:ry="58.57143"
+       d="m 371.42858,393.79074 a 58.57143,58.57143 0 1 1 -117.14286,0 58.57143,58.57143 0 1 1 117.14286,0 z"
+       inkscape:export-filename="/home/william/Projects/Programming/kivy_development/FlatKivy/flat_kivy/data/images/slider_handle_disabled.png"
+       inkscape:export-xdpi="86.375412"
+       inkscape:export-ydpi="86.375412"
+       transform="matrix(0.38077093,0,0,0.38077093,86.587377,276.70384)" />
     <path
        sodipodi:type="arc"
        style="opacity:0.5;fill:#808080;fill-opacity:1;fill-rule:evenodd;stroke:none;filter:url(#filter3769)"
@@ -88,16 +110,16 @@
        inkscape:export-ydpi="86.375435" />
     <path
        sodipodi:type="arc"
-       style="fill:#817b7b;fill-opacity:1;stroke:none;opacity:1"
+       style="fill:#817b7b;fill-opacity:1;stroke:none"
        id="path3755-0"
        sodipodi:cx="106.07143"
        sodipodi:cy="348.43362"
        sodipodi:rx="21.071428"
        sodipodi:ry="21.071428"
        d="m 127.14285,348.43362 a 21.071428,21.071428 0 1 1 -42.142852,0 21.071428,21.071428 0 1 1 42.142852,0 z"
-       transform="matrix(0.89830508,0,0,0.89830508,263.28692,78.291056)"
-       inkscape:export-filename="/home/william/programs/FlatKivy/flat_kivy/data/images/slider_handle_disabled.png"
-       inkscape:export-xdpi="118.868"
-       inkscape:export-ydpi="118.868" />
+       transform="matrix(0.89830508,0,0,0.89830508,110.42978,113.64821)"
+       inkscape:export-filename="/home/william/Projects/Programming/kivy_development/FlatKivy/flat_kivy/data/images/slider_handle_disabled.png"
+       inkscape:export-xdpi="86.375412"
+       inkscape:export-ydpi="86.375412" />
   </g>
 </svg>
