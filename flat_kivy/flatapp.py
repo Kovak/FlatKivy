@@ -11,7 +11,8 @@ from kivy.clock import Clock
 from numpad import DecimalNumPad, NumPad
 from ui_elements import FlatPopup
 from ui_elements import (ErrorContent, OptionContent, FlatIconButton,
-    FlatLabel, FlatButton, FlatToggleButton, FlatCheckBox, CheckBoxListItem,
+    FlatLabel, FlatButton, FlatToggleButton, RaisedFlatButton,
+    RaisedFlatToggleButton, FlatCheckBox, CheckBoxListItem,
     FlatSlider, LogBehavior)
 from utils import get_icon_char, get_rgba_color, construct_target_file_name
 from font_definitions import get_font_ramp_group, get_style, style_manager
@@ -35,7 +36,10 @@ class ThemeManager(object):
 
     types_to_theme = {
         'FlatButton': FlatButton, 'FlatIconButton': FlatIconButton,
-        'FlatLabel': FlatLabel, 'FlatToggleButton': FlatToggleButton,
+        'FlatToggleButton': FlatToggleButton,
+        'RaisedFlatButton': RaisedFlatButton,
+        'RaisedFlatToggleButton': RaisedFlatToggleButton,
+        'FlatLabel': FlatLabel,
         'FlatCheckBox': FlatCheckBox, 'CheckBoxListItem': CheckBoxListItem,
         'FlatSlider': FlatSlider,
         }
