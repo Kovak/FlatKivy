@@ -4,11 +4,11 @@ from kivy.properties import (ListProperty, DictProperty, StringProperty,
                              ObjectProperty, NumericProperty)
 from kivy.lang import Builder
 
-from flat_kivy.utils import construct_target_file_name
+from flat_kivy.utils import construct_data_resource
 
 
 Builder.load_file(
-    construct_target_file_name('../data/ui_elements.kv', __file__))
+    construct_data_resource('ui_elements.kv'))
 
 
 class ErrorContent(GridLayout):

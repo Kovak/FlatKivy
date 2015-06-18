@@ -4,7 +4,7 @@ from kivy.properties import (BooleanProperty, ListProperty, StringProperty,
                              ObjectProperty)
 
 from flat_kivy.uix.behaviors import (GrabBehavior, ThemeBehavior, LogBehavior)
-from flat_kivy.utils import construct_target_file_name, get_metric_conversion
+from flat_kivy.utils import construct_data_resource, get_metric_conversion
 
 
 class FlatLabel(GrabBehavior, ThemeBehavior, LogBehavior, Label):
@@ -22,8 +22,8 @@ class FlatLabel(GrabBehavior, ThemeBehavior, LogBehavior, Label):
 
     def on_style_dict(self, instance, value):
         if value is not None:
-            self.font_name = construct_target_file_name(
-                '../data/font/' + value.font_file, __file__)
+            self.font_name = construct_data_resource(
+                'font/' + value.font_file)
             self.font_size = font_size = get_metric_conversion(
                 value.size_mobile)
             self.color[3] = value.alpha

@@ -18,7 +18,7 @@ else:
     _has_scissor_instr = True
 
 # from flat_kivy.uix.flatcheckbox import FlatCheckBox
-from flat_kivy.utils import construct_target_file_name
+from flat_kivy.utils import construct_data_resource
 from flat_kivy.logmanager import LogManager
 
 
@@ -75,7 +75,7 @@ class GrabBehavior(object):
 
 class LogBehavior(object):
     log_manager = LogManager(
-        construct_target_file_name('data/logs/', __file__))
+        construct_data_resource('logs/'))
 
     def on_touch_down(self, touch):
         log_manager = self.log_manager
@@ -114,7 +114,7 @@ class LogBehavior(object):
 
 class LogNoTouchBehavior(object):
     log_manager = LogManager(
-        construct_target_file_name('data/logs/', __file__))
+        construct_data_resource('logs/'))
 
 
 class ButtonBehavior(object):

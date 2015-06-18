@@ -3,7 +3,7 @@ from kivy.uix.slider import Slider
 from kivy.properties import ListProperty, NumericProperty, StringProperty
 from kivy.graphics import Color, Rectangle
 
-from flat_kivy.utils import construct_target_file_name, get_metric_conversion
+from flat_kivy.utils import construct_data_resource, get_metric_conversion
 from flat_kivy.uix.behaviors import ThemeBehavior
 
 
@@ -13,11 +13,9 @@ class FlatSlider(Slider, ThemeBehavior):
     handle_accent_color = ListProperty((1., 1., 1., 1.))
     handle_size = NumericProperty('28sp')
     handle_image_normal = StringProperty(
-        construct_target_file_name('../data/images/slider_handle_normal.png',
-                                   __file__))
+        construct_data_resource('images/slider_handle_normal.png'))
     handle_image_disabled = StringProperty(
-        construct_target_file_name('../data/images/slider_handle_disabled.png',
-                                   __file__))
+        construct_data_resource('images/slider_handle_disabled.png'))
 
     bar_color_tuple = ListProperty(('Gray', '800'))
     bar_fill_color_tuple = ListProperty(('Blue', '500'))
