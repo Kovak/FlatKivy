@@ -8,7 +8,7 @@ from kivy.app import App
 from kivy.properties import ObjectProperty, NumericProperty, BooleanProperty
 from kivy.clock import Clock
 
-from flat_kivy.uix.behaviors import (LogBehavior)
+from flat_kivy.uix.behaviors import LogBehavior
 from flat_kivy.uix.flatbutton import FlatButton, RaisedFlatButton
 from flat_kivy.uix.flattogglebutton import (FlatToggleButton,
                                             RaisedFlatToggleButton)
