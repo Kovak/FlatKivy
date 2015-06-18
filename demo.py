@@ -3,8 +3,8 @@
 from kivy.uix.widget import Widget
 from kivy.lang import Builder
 
-from flatapp import FlatApp
-
+from flat_kivy.flatapp import FlatApp
+from flat_kivy.uix.flattextinput import FlatTextInput
 
 Builder.load_string('''
 <RootWidget>:
@@ -40,18 +40,18 @@ Builder.load_string('''
             group: 'toggle'
             theme: ('green', 'accent')
 
-        CheckBoxListItem:
+        FlatCheckBoxListItem:
             text: 'check 1'
             group: 'check'
             theme: ('green', 'accent')
 
-        CheckBoxListItem:
+        FlatCheckBoxListItem:
             text: 'check 2'
             group: 'check'
             theme: ('green', 'accent')
 
         FlatCard:
-            image_source: 'AstroPic1.jpg'
+            image_source: 'flat_kivy/AstroPic1.jpg'
             text: 'the card'
             color_tuple: ('Gray', '0000')
 
@@ -144,6 +144,11 @@ class MyFlatApp(FlatApp):
                 'font_color_tuple': ('LightGreen', '800'),
                 'style': 'Button',
                 },
+            'RaisedFlatButton': {
+                'color_tuple': ('Gray', '0000'),
+                'font_color_tuple': ('LightGreen', '800'),
+                'style': 'Button',
+                },
             'FlatLabel': {
                 'style': 'Button',
                 },
@@ -159,6 +164,11 @@ class MyFlatApp(FlatApp):
                 'font_color_tuple': ('Gray', '1000'),
                 'style': 'Button',
                 },
+            'RaisedFlatButton': {
+                'color_tuple': ('LightGreen', '500'),
+                'font_color_tuple': ('Gray', '1000'),
+                'style': 'Button',
+                },
             'FlatIconButton': {
                 'color_tuple': ('LightGreen', '500'),
                 'font_color_tuple': ('Gray', '1000'),
@@ -166,6 +176,11 @@ class MyFlatApp(FlatApp):
                 'icon_color_tuple': ('Gray', '1000')
                 },
             'FlatToggleButton': {
+                'color_tuple': ('LightGreen', '500'),
+                'font_color_tuple': ('Gray', '1000'),
+                'style': 'Button',
+                },
+            'RaisedFlatToggleButton': {
                 'color_tuple': ('LightGreen', '500'),
                 'font_color_tuple': ('Gray', '1000'),
                 'style': 'Button',
@@ -178,8 +193,8 @@ class MyFlatApp(FlatApp):
                 'check_scale': .7,
                 'outline_size': '10dp',
                 },
-            'CheckBoxListItem': {
-                'font_color_tuple': ('Gray', '0000'),
+            'FlatCheckBoxListItem': {
+                'font_color_tuple': ('Gray', '1000'),
                 'check_color_tuple': ('LightGreen', '500'),
                 'outline_color_tuple': ('Gray', '800'),
                 'style': 'Button',

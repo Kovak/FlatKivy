@@ -1,7 +1,7 @@
 from __future__ import unicode_literals, print_function
 from kivy.uix.label import Label
 from kivy.event import EventDispatcher
-from ui_elements import FlatLabel
+from flat_kivy.uix.flatlabel import FlatLabel
 from kivy.clock import Clock
 from kivy.properties import ListProperty
 import operator

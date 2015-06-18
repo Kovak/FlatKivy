@@ -8,12 +8,19 @@ from kivy.app import App
 from kivy.properties import ObjectProperty, NumericProperty, BooleanProperty
 from kivy.clock import Clock
 
+from flat_kivy.uix.behaviors import (LogBehavior)
+from flat_kivy.uix.flatbutton import FlatButton, RaisedFlatButton
+from flat_kivy.uix.flattogglebutton import (FlatToggleButton,
+                                            RaisedFlatToggleButton)
+from flat_kivy.uix.flatpopup import FlatPopup
+from flat_kivy.uix import ErrorContent, OptionContent
+from flat_kivy.uix.flaticonbutton import FlatIconButton
+from flat_kivy.uix.flatcheckbox import FlatCheckBox, FlatCheckBoxListItem
+from flat_kivy.uix.flatlabel import FlatLabel
+from flat_kivy.uix.flatslider import FlatSlider
+from flat_kivy.uix.flatcard import FlatCard
+
 from numpad import DecimalNumPad, NumPad
-from ui_elements import FlatPopup
-from ui_elements import (ErrorContent, OptionContent, FlatIconButton,
-    FlatLabel, FlatButton, FlatToggleButton, RaisedFlatButton,
-    RaisedFlatToggleButton, FlatCheckBox, CheckBoxListItem,
-    FlatSlider, LogBehavior)
 from utils import get_icon_char, get_rgba_color, construct_target_file_name
 from font_definitions import get_font_ramp_group, get_style, style_manager
 from dbinterface import DBInterface
@@ -40,8 +47,10 @@ class ThemeManager(object):
         'RaisedFlatButton': RaisedFlatButton,
         'RaisedFlatToggleButton': RaisedFlatToggleButton,
         'FlatLabel': FlatLabel,
-        'FlatCheckBox': FlatCheckBox, 'CheckBoxListItem': CheckBoxListItem,
+        'FlatCheckBox': FlatCheckBox,
+        'FlatCheckBoxListItem': FlatCheckBoxListItem,
         'FlatSlider': FlatSlider,
+        'FlatCard': FlatCard,
         }
 
     themes = {}
@@ -197,7 +206,7 @@ class FlatApp(App):
                 'check_scale': .7,
                 'outline_size': '10dp',
                 },
-            'CheckBoxListItem':{
+            'FlatCheckBoxListItem':{
                 'color_tuple': ('Gray', '0000'),
                 'ripple_color_tuple': ('Cyan', '100'),
                 'check_color_tuple': ('LightBlue', '500'),
