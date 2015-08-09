@@ -8,7 +8,7 @@ from numpad import DecimalNumPad, NumPad
 from ui_elements import FlatPopup
 from ui_elements import (ErrorContent, OptionContent, FlatIconButton, 
     FlatLabel, FlatButton, FlatToggleButton, FlatCheckBox, CheckBoxListItem,
-    LogBehavior)
+    LogBehavior, FlatSlider)
 from utils import get_icon_char, get_rgba_color, construct_target_file_name
 from font_definitions import get_font_ramp_group, get_style, style_manager
 from dbinterface import DBInterface
@@ -34,6 +34,7 @@ class ThemeManager(object):
         'FlatButton': FlatButton, 'FlatIconButton': FlatIconButton, 
         'FlatLabel': FlatLabel, 'FlatToggleButton': FlatToggleButton,
         'FlatCheckBox': FlatCheckBox, 'CheckBoxListItem': CheckBoxListItem,
+        'FlatSlider': FlatSlider,
         }
 
     themes = {}

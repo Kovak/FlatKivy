@@ -21,15 +21,17 @@ from kivy.uix.widget import Widget
 from kivy.uix.scrollview import ScrollView
 from kivy.uix.popup import Popup
 from kivy.uix.textinput import TextInput
+from kivy.uix.slider import Slider
 from kivy.app import App
 from weakref import ref
 from kivy.graphics import (StencilPush, StencilPop, StencilUse, StencilUnUse, 
-    Rectangle, Ellipse, Color, ScissorPush, ScissorPop)
+    Rectangle, Ellipse, Color, ScissorPush, ScissorPop, Line)
 from dbinterface import DBInterface
 from kivy.event import EventDispatcher
 from kivy.uix.screenmanager import Screen
 from kivy.clock import Clock
 from kivy.app import App
+from kivy.metrics import sp
 
 class GrabBehavior(object):
     last_touch = ObjectProperty(None)
@@ -335,7 +337,7 @@ class ThemeBehavior(object):
                     try:
                         theme_def = theme[each]
                     except:
-                        print(each, 'not in theme', value[0], value[1])
+                        print(each, 'not in theme', value[0], value[1], self)
                         continue
                     for propname in theme_def:
                         setattr(self, propname, theme_def[propname])
@@ -458,6 +460,7 @@ class FlatScreen(GrabBehavior, LogNoTouchBehavior, Screen):
 
 class FlatPopup(Popup):
     popup_color = ListProperty([1., 1., 1., 1.])
+    title_color_tuple = ListProperty(['Gray', '0000'])
 
 
 class FlatScrollView(ScrollView):
@@ -471,16 +474,17 @@ class FlatButton(GrabBehavior, LogBehavior, TouchRippleBehavior,
     color = ListProperty([1., 1., 1.])
     color_down = ListProperty([.7, .7, .7])
     text = StringProperty('')
+    alpha = NumericProperty(1.0)
     style = StringProperty(None, allownone=True)
     color_tuple = ListProperty(['Blue', '500'])
     font_color_tuple = ListProperty(['Grey', '1000'])
     ripple_color_tuple = ListProperty(['Grey', '0000'])
     font_ramp_tuple = ListProperty(None)
     font_size = NumericProperty(12)
-    
+    eat_touch = BooleanProperty(False)
+
     def on_color(self, instance, value):
         self.color_down = [x*.7 for x in value]
-
 
 class FlatImageButton(GrabBehavior, LogBehavior, ButtonBehavior,
     TouchRippleBehavior, ThemeBehavior, AnchorLayout):
@@ -747,3 +751,119 @@ class CheckBoxListItem(GrabBehavior, TouchRippleBehavior,
 
     def toggle_checkbox(self):
         self.ids.checkbox._toggle_active()
+
+
+class SliderTouchRippleBehavior(object):
+    ripple_rad = NumericProperty(10)
+    ripple_pos = ListProperty([0, 0])
+    ripple_color = ListProperty((1., 1., 1., 1.))
+    ripple_duration_in = NumericProperty(.2)
+    ripple_duration_out = NumericProperty(.5)
+    fade_to_alpha = NumericProperty(.75)
+    ripple_scale = NumericProperty(2.0)
+    ripple_func_in = StringProperty('in_cubic')
+    ripple_func_out = StringProperty('out_quad')
+
+    def __init__(self, **kwargs):
+        super(SliderTouchRippleBehavior, self).__init__(**kwargs)
+        self.slider_stencil = None
+        self.slider_stencil_unuse = None
+        self.slider_line_stencil = None 
+        self.slider_line_stencil_unuse = None
+
+    def on_touch_down(self, touch):
+        if self in touch.ud:
+            self.anim_complete(self, self)
+            self.ripple_pos = ripple_pos = (touch.x, touch.y)
+            Animation.cancel_all(self, 'ripple_rad', 'ripple_color')
+            rc = self.ripple_color
+            ripple_rad = self.ripple_rad
+            self.ripple_color = [rc[0], rc[1], rc[2], 1.]
+            anim = Animation(
+                ripple_rad=max(self.width, self.height) * self.ripple_scale, 
+                t=self.ripple_func_in,
+                ripple_color=[rc[0], rc[1], rc[2], self.fade_to_alpha], 
+                duration=self.ripple_duration_in)
+            anim.start(self)
+            with self.canvas.after:
+                x,y = self.to_window(*self.pos)
+                width, height = self.size
+                #In python 3 the int cast will be unnecessary
+                StencilPush()
+                Rectangle(
+                    pos=(self.x + self.padding + sp(2), self.center_y - sp(7)), 
+                    size=(self.width - self.padding * 2 - sp(4), sp(14)))
+                self.slider_stencil = Ellipse(
+                    pos=(self.value_pos[0] - sp(16), self.center_y - sp(17)),
+                    size=(sp(32), sp(32)))
+                StencilUse(op='lequal')
+                self.col_instruction = Color(rgba=self.ripple_color)
+                self.ellipse = Ellipse(size=(ripple_rad, ripple_rad),
+                    pos=(ripple_pos[0] - ripple_rad/2., 
+                    ripple_pos[1] - ripple_rad/2.))
+                StencilUnUse()
+                Rectangle(
+                    pos=(self.x + self.padding + sp(4), self.center_y - sp(7)), 
+                    size=(self.width - self.padding * 2 - sp(8), sp(14)))
+                self.slider_stencil_unuse = Ellipse(
+                    pos=(self.value_pos[0] - sp(16), self.center_y - sp(17)),
+                    size=(sp(32), sp(32)))
+   
+                StencilPop()
+            self.bind(ripple_color=self.set_color, ripple_pos=self.set_ellipse,
+                ripple_rad=self.set_ellipse)
+        return super(SliderTouchRippleBehavior, self).on_touch_down(touch)
+
+    def update_stencil(self):
+        if self.slider_stencil is not None:
+            self.slider_stencil.pos = (self.value_pos[0] - sp(16), 
+                self.center_y - sp(17))
+        if self.slider_stencil_unuse is not None:
+            self.slider_stencil_unuse.pos = (self.value_pos[0] - sp(16), 
+                self.center_y - sp(17))
+        if self.slider_line_stencil is not None:
+            self.slider_line_stencil.ellipse = [self.value_pos[0] - sp(16), 
+                    self.center_y - sp(17), sp(32), sp(32)]
+        if self.slider_line_stencil_unuse is not None:
+            self.slider_line_stencil_unuse.ellipse = [
+                self.value_pos[0] - sp(16), 
+                self.center_y - sp(17), sp(32), sp(32)]
+
+    def on_value_pos(self, instance, value):
+        self.update_stencil()
+
+    def set_ellipse(self, instance, value):
+        ellipse = self.ellipse
+        ripple_pos = self.ripple_pos
+        ripple_rad = self.ripple_rad
+        ellipse.size = (ripple_rad, ripple_rad)
+        ellipse.pos = (ripple_pos[0] - ripple_rad/2., 
+            ripple_pos[1] - ripple_rad/2.)
+
+    def set_color(self, instance, value):
+        self.col_instruction.rgba = value
+
+    def on_touch_up(self, touch):
+        if self in touch.ud:
+            rc = self.ripple_color
+            anim = Animation(ripple_color=[rc[0], rc[1], rc[2], 0.], 
+                t=self.ripple_func_out, duration=self.ripple_duration_out)
+            anim.bind(on_complete=self.anim_complete)
+            anim.start(self)
+        return super(SliderTouchRippleBehavior, self).on_touch_up(touch)
+
+    def anim_complete(self, anim, instance):
+        self.ripple_rad = 10
+        self.canvas.after.clear()
+        self.slider_stencil = None
+        self.slider_stencil_unuse = None
+
+
+class FlatSlider(GrabBehavior, SliderTouchRippleBehavior, ThemeBehavior, 
+    Slider):
+    color_tuple = ListProperty(['Blue', '500'])
+    slider_color_tuple = ListProperty(['Orange', '300'])
+    outline_color_tuple = ListProperty(['Blue', '600'])
+    slider_outline_color_tuple = ListProperty(['Orange', '500'])
+    ripple_color_tuple = ListProperty(['Grey', '0000'])
+

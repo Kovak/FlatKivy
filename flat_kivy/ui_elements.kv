@@ -27,7 +27,7 @@
             size: self.size
             pos: self.pos
         Color:
-            rgba: 0., 0., 0., 1.
+            rgba: self.cursor_color
         Rectangle:
             size: (self.size[0], sp(2))
             pos: self.pos[0], self.cursor_pos[1] - self.line_height - sp(2)
@@ -60,7 +60,7 @@
     ripple_color: app.get_color(self.ripple_color_tuple)
     canvas.before:
         Color:
-            rgb: root.color_down if root.state == 'down' or root.disabled else root.color
+            rgba: self.color_down[0:3] + [self.alpha] if self.state == 'down' or root.disabled else self.color[0:3] + [self.alpha]
         Rectangle:
             size: self.size
             pos: self.pos
@@ -281,7 +281,7 @@
 
 <-FlatPopup>:
     _container: container
-    title_color: (0., 0., 0., 1.)
+
     canvas.before:
         Color:
             rgba: root.background_color[:3] + [root.background_color[-1] * self._anim_alpha]
@@ -300,9 +300,9 @@
         pos: root.pos
         size: root.size
 
-        Label:
+        FlatLabel:
             text: root.title
-            color: root.title_color
+            color: app.get_color(root.title_color_tuple)
             size_hint_y: None
             height: self.texture_size[1] + 16
             text_size: self.width - 16, None
@@ -399,3 +399,28 @@
         halign: 'center'
         valign: 'top'
         text: root.text
+
+
+<FlatSlider>:
+    ripple_color: app.get_color(self.ripple_color_tuple)
+    canvas:
+        Color:
+            rgba: app.get_color(self.color_tuple)
+        Rectangle:
+            pos: (self.x + self.padding, self.center_y - sp(8)) if self.orientation == 'horizontal' else (self.center_x - sp(8), self.y + self.padding)
+            size: (self.width - self.padding * 2, sp(16)) if self.orientation == 'horizontal' else (sp(16), self.height - self.padding * 2)
+        Color:
+            rgba: app.get_color(self.outline_color_tuple)
+        Line:
+            rounded_rectangle: [self.x + self.padding, self.center_y - sp(8), self.width - self.padding * 2, sp(16), sp(4)]
+            width: sp(2)
+        Color:
+            rgba: app.get_color(self.slider_color_tuple)
+        Ellipse:
+            pos: (self.value_pos[0] - sp(16), self.center_y - sp(17)) if self.orientation == 'horizontal' else (self.center_x - (16), self.value_pos[1] - sp(16))
+            size: (sp(32), sp(32))
+        Color:
+            rgba: app.get_color(self.slider_outline_color_tuple)
+        Line:
+            ellipse: [self.value_pos[0] - sp(16), self.center_y - sp(17), sp(32), sp(32)]
+            width: sp(2)
