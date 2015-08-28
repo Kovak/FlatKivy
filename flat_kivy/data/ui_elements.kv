@@ -402,7 +402,7 @@
         Color:
             rgba: app.get_color(self.outline_color_tuple)
         Line:
-            rounded_rectangle: [self.x + self.padding, self.center_y - sp(8), self.width - self.padding * 2, sp(16), sp(4)]
+            rounded_rectangle: [self.x + self.padding, self.center_y - sp(8), self.width - self.padding * 2, sp(16), sp(4)] if self.orientation == 'horizontal' else [self.center_x - sp(8), self.y + self.padding, sp(16), self.height - self.padding * 2, sp(4)]
             width: sp(2)
         Color:
             rgba: app.get_color(self.slider_color_tuple)
@@ -412,5 +412,5 @@
         Color:
             rgba: app.get_color(self.slider_outline_color_tuple)
         Line:
-            ellipse: [self.value_pos[0] - sp(16), self.center_y - sp(17), sp(32), sp(32)]
+            ellipse: [self.value_pos[0] - sp(16), self.center_y - sp(17), sp(32), sp(32)] if self.orientation == 'horizontal' else [self.center_x - sp(17), self.value_pos[1] - sp(16), sp(32), sp(32)]
             width: sp(2)

@@ -452,13 +452,22 @@ class SliderTouchRippleBehavior(object):
             with self.canvas.after:
                 x,y = self.to_window(*self.pos)
                 width, height = self.size
-                #In python 3 the int cast will be unnecessary
+
+                if self.orientation == 'horizontal':
+                    ellipse_pos = (self.value_pos[0] - sp(16), self.center_y - sp(17))
+                    stencil_pos = (self.x + self.padding + sp(2), self.center_y - sp(7))
+                    stencil_size = (self.width - self.padding * 2 - sp(4), sp(14))
+                else:
+                    ellipse_pos = (self.center_x - sp(17), self.value_pos[1] - sp(16))
+                    stencil_pos = (self.center_x - sp(7), self.y + self.padding + sp(2))
+                    stencil_size = (sp(14), self.height - self.padding * 2 - sp(4))
+
                 StencilPush()
                 Rectangle(
-                    pos=(self.x + self.padding + sp(2), self.center_y - sp(7)),
-                    size=(self.width - self.padding * 2 - sp(4), sp(14)))
+                    pos=stencil_pos,
+                    size=stencil_size)
                 self.slider_stencil = Ellipse(
-                    pos=(self.value_pos[0] - sp(16), self.center_y - sp(17)),
+                    pos=ellipse_pos,
                     size=(sp(32), sp(32)))
                 StencilUse(op='lequal')
                 self.col_instruction = Color(rgba=self.ripple_color)
@@ -467,10 +476,10 @@ class SliderTouchRippleBehavior(object):
                     ripple_pos[1] - ripple_rad/2.))
                 StencilUnUse()
                 Rectangle(
-                    pos=(self.x + self.padding + sp(4), self.center_y - sp(7)),
-                    size=(self.width - self.padding * 2 - sp(8), sp(14)))
+                    pos=stencil_pos,
+                    size=stencil_size)
                 self.slider_stencil_unuse = Ellipse(
-                    pos=(self.value_pos[0] - sp(16), self.center_y - sp(17)),
+                    pos=ellipse_pos,
                     size=(sp(32), sp(32)))
 
                 StencilPop()
@@ -479,19 +488,25 @@ class SliderTouchRippleBehavior(object):
         return super(SliderTouchRippleBehavior, self).on_touch_down(touch)
 
     def update_stencil(self):
+        if self.orientation == 'horizontal':
+            pos = [self.value_pos[0] - sp(16),
+                   self.center_y - sp(17)]
+            ellipse = [self.value_pos[0] - sp(16),
+                       self.center_y - sp(17), sp(32), sp(32)]
+        else:
+            pos = [self.center_x - sp(17),
+                   self.value_pos[1] - sp(16)]
+            ellipse = [self.center_x - sp(17),
+                       self.value_pos[1] - sp(16), sp(32), sp(32)]
+
         if self.slider_stencil is not None:
-            self.slider_stencil.pos = (self.value_pos[0] - sp(16),
-                self.center_y - sp(17))
+            self.slider_stencil.pos = pos
         if self.slider_stencil_unuse is not None:
-            self.slider_stencil_unuse.pos = (self.value_pos[0] - sp(16),
-                self.center_y - sp(17))
+            self.slider_stencil_unuse.pos = pos
         if self.slider_line_stencil is not None:
-            self.slider_line_stencil.ellipse = [self.value_pos[0] - sp(16),
-                    self.center_y - sp(17), sp(32), sp(32)]
+            self.slider_line_stencil.ellipse = ellipse
         if self.slider_line_stencil_unuse is not None:
-            self.slider_line_stencil_unuse.ellipse = [
-                self.value_pos[0] - sp(16),
-                self.center_y - sp(17), sp(32), sp(32)]
+            self.slider_line_stencil_unuse.ellipse = ellipse
 
     def on_value_pos(self, instance, value):
         self.update_stencil()
