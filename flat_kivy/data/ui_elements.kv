@@ -407,7 +407,7 @@
         Color:
             rgba: app.get_color(self.slider_color_tuple)
         Ellipse:
-            pos: (self.value_pos[0] - sp(16), self.center_y - sp(17)) if self.orientation == 'horizontal' else (self.center_x - (16), self.value_pos[1] - sp(16))
+            pos: (self.value_pos[0] - sp(16), self.center_y - sp(17)) if self.orientation == 'horizontal' else (self.center_x - sp(16), self.value_pos[1] - sp(16))
             size: (sp(32), sp(32))
         Color:
             rgba: app.get_color(self.slider_outline_color_tuple)
