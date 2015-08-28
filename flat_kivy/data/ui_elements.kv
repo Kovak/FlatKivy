@@ -391,6 +391,9 @@
 <FlatSlider>:
     ripple_color: app.get_color(self.ripple_color_tuple)
     canvas:
+        # Remove all "regular" Kivy Slider graphics instructions.
+        Clear
+
         Color:
             rgba: app.get_color(self.color_tuple)
         Rectangle:
