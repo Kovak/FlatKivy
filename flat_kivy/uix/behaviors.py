@@ -35,7 +35,7 @@ class ThemeBehavior(object):
                     try:
                         theme_def = theme[each]
                     except:
-                        print(each, 'not in theme', value[0], value[1])
+                        print(each, 'not in theme', value[0], value[1], self)
                         continue
                     for propname in theme_def:
                         setattr(self, propname, theme_def[propname])

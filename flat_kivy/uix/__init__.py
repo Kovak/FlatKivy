@@ -57,6 +57,7 @@ from flat_kivy.uix.behaviors import GrabBehavior, LogNoTouchBehavior
 
 class FlatPopup(Popup):
     popup_color = ListProperty([1., 1., 1., 1.])
+    title_color_tuple = ListProperty(['Gray', '0000'])
 
 
 class FlatScreen(GrabBehavior, LogNoTouchBehavior, Screen):

@@ -27,7 +27,7 @@
             size: self.size
             pos: self.pos
         Color:
-            rgba: 0., 0., 0., 1.
+            rgba: self.cursor_color
         Rectangle:
             size: (self.size[0], sp(2))
             pos: self.pos[0], self.cursor_pos[1] - self.line_height - sp(2)
@@ -60,7 +60,7 @@
     ripple_color: app.get_color(self.ripple_color_tuple)
     canvas.before:
         Color:
-            rgb: root.color_down if root.state == 'down' or root.disabled else root.color
+            rgba: self.color_down[0:3] + [self.alpha] if self.state == 'down' or root.disabled else self.color[0:3] + [self.alpha]
         Rectangle:
             size: (self.width - self.border_size[1] - self.border_size[3], self.height - self.border_size[0] - self.border_size[2])
             pos: (self.x + self.border_size[3], self.y + self.border_size[2])
@@ -269,7 +269,7 @@
 
 <-FlatPopup>:
     _container: container
-    title_color: (0., 0., 0., 1.)
+
     canvas.before:
         Color:
             rgba: root.background_color[:3] + [root.background_color[-1] * self._anim_alpha]
@@ -288,9 +288,9 @@
         pos: root.pos
         size: root.size
 
-        Label:
+        FlatLabel:
             text: root.title
-            color: root.title_color
+            color: app.get_color(root.title_color_tuple)
             size_hint_y: None
             height: self.texture_size[1] + 16
             text_size: self.width - 16, None
