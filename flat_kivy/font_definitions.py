@@ -1,7 +1,7 @@
 from __future__ import unicode_literals, print_function
 from kivy.uix.label import Label
 from kivy.event import EventDispatcher
-from ui_elements import FlatLabel
+from flat_kivy.uix.flatlabel import FlatLabel
 from kivy.clock import Clock
 from kivy.properties import ListProperty
 import operator
@@ -73,7 +73,6 @@ class RampGroup(EventDispatcher):
             return_counts[each] = {'fit_count': 0, 'big_count': 0, 
                 'small_count': 0}
         for label in tracked_labels:
-            
             for style in font_ramp:
                 return_count = return_counts[style]
                 
@@ -84,18 +83,13 @@ class RampGroup(EventDispatcher):
                     return_count['big_count'] += 1
                 elif fit =='toosmall':
                     return_count['small_count'] += 1
-        #big_counts = []
-        #small_counts = []
         fit_counts = []
-        #big_a = big_counts.append
-        #small_a = small_counts.append
         fit_a = fit_counts.append
         for style in return_counts:
-            #big_a((style, return_counts[style]['big_count']))
-            #small_a((style, return_counts[style]['small_count']))
             if return_counts[style]['big_count'] == 0:
-                fit_a((style, return_counts[style]['fit_count'], 
-                    return_counts[style]['big_count'], 
+                fit_a((
+                    style, return_counts[style]['fit_count'],
+                    return_counts[style]['big_count'],
                     return_counts[style]['small_count'],
                     font_ramp.index(style)))
         sorted_fit = sorted(fit_counts, key=lambda x: (
@@ -109,14 +103,11 @@ class RampGroup(EventDispatcher):
         else:
             style = last[0]
         self.set_style(style)
-        # returns = set()
-
 
     def set_style(self, style):
         for tracked_label in self.tracked_labels:
             tracked_label._do_check_adjustments = True
             tracked_label.style = style
-        #Clock.schedule_once(self.reset_track_adjustments, .025)
 
     def reset_track_adjustments(self, dt):
         for tracked_label in self.tracked_labels:

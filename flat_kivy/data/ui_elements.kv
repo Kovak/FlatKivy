@@ -55,15 +55,15 @@
     effect_cls: ScrollEffect
 
 
-<FlatButton>:
+<FlatButtonBase>:
     color: app.get_color(self.color_tuple)
     ripple_color: app.get_color(self.ripple_color_tuple)
     canvas.before:
         Color:
             rgba: self.color_down[0:3] + [self.alpha] if self.state == 'down' or root.disabled else self.color[0:3] + [self.alpha]
         Rectangle:
-            size: self.size
-            pos: self.pos
+            size: (self.width - self.border_size[1] - self.border_size[3], self.height - self.border_size[0] - self.border_size[2])
+            pos: (self.x + self.border_size[3], self.y + self.border_size[2])
 
     FlatLabel:
         size_hint: (1.0, 1.0)
@@ -75,6 +75,15 @@
         valign: 'middle'
         halign: 'center'
         font_size: root.font_size
+
+
+<RaisedStyle>:
+    canvas.before:
+        BorderImage:
+            border: self.border
+            pos: self.pos
+            size: self.size
+            source: self.border_image
 
 
 <FlatIcon>:
@@ -224,26 +233,6 @@
             text_size: self.size
 
 
-<FlatToggleButton>:
-    color: app.get_color(self.color_tuple)
-    ripple_color: app.get_color(self.ripple_color_tuple)
-    canvas.before:
-        Color:
-            rgb: root.color if root.state == 'normal' else root.color_down
-        Rectangle:
-            size: self.size
-            pos: self.pos
-    FlatLabel:
-        size_hint: (1.0, 1.0)
-        color_tuple: root.font_color_tuple
-        text: root.text
-        style: root.style
-        font_ramp_tuple: root.font_ramp_tuple
-        valign: 'middle'
-        halign: 'center'
-        text_size: root.size
-
-
 <OptionContent>:
     orientation: 'tb-lr'
     size_hint: (1.0, 1.0)
@@ -276,7 +265,6 @@
         id: dismiss_button
         text: 'Ok'
         size_hint: (1.0, .2)
-        theme: ('blue', 'variant_1')
 
 
 <-FlatPopup>:
@@ -343,7 +331,7 @@
     font_size: (self.size[0] + self.size[1]/2.)*self.scale
 
 
-<CheckBoxListItem>:
+<FlatCheckBoxListItem>:
     orientation: 'horizontal'
     active: checkbox.active
     ripple_color: app.get_color(self.ripple_color_tuple)
@@ -357,7 +345,7 @@
         halign: root.halign
         font_ramp_tuple: root.font_ramp_tuple
         valign: root.valign
-        text_size: (root.size[0]*.8, None)
+        text_size: self.size
     FlatCheckBox:
         group: root.group
         id: checkbox
@@ -401,7 +389,7 @@
         text: root.text
 
 
-<FlatSlider>:
+<-FlatSlider>:
     ripple_color: app.get_color(self.ripple_color_tuple)
     canvas:
         Color:
@@ -412,15 +400,15 @@
         Color:
             rgba: app.get_color(self.outline_color_tuple)
         Line:
-            rounded_rectangle: [self.x + self.padding, self.center_y - sp(8), self.width - self.padding * 2, sp(16), sp(4)]
+            rounded_rectangle: [self.x + self.padding, self.center_y - sp(8), self.width - self.padding * 2, sp(16), sp(4)] if self.orientation == 'horizontal' else [self.center_x - sp(8), self.y + self.padding, sp(16), self.height - self.padding * 2, sp(4)]
             width: sp(2)
         Color:
             rgba: app.get_color(self.slider_color_tuple)
         Ellipse:
-            pos: (self.value_pos[0] - sp(16), self.center_y - sp(17)) if self.orientation == 'horizontal' else (self.center_x - (16), self.value_pos[1] - sp(16))
+            pos: (self.value_pos[0] - sp(16), self.center_y - sp(17)) if self.orientation == 'horizontal' else (self.center_x - sp(16), self.value_pos[1] - sp(16))
             size: (sp(32), sp(32))
         Color:
             rgba: app.get_color(self.slider_outline_color_tuple)
         Line:
-            ellipse: [self.value_pos[0] - sp(16), self.center_y - sp(17), sp(32), sp(32)]
+            ellipse: [self.value_pos[0] - sp(16), self.center_y - sp(17), sp(32), sp(32)] if self.orientation == 'horizontal' else [self.center_x - sp(17), self.value_pos[1] - sp(16), sp(32), sp(32)]
             width: sp(2)
