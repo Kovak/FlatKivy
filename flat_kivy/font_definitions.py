@@ -45,11 +45,12 @@ class RampGroup(EventDispatcher):
         self.tracked_labels = []
         self.font_ramp = font_ramp
         self.name = name
-        self.current_style = font_ramp[0]
+        self.current_style = font_ramp[-1]
         self._test_label = FlatLabel()
         self._cache = {}
         self.max_iterations = 5
-        self.trigger_fit_check = Clock.create_trigger(self.check_fit_for_all_labels)
+        self.trigger_fit_check = Clock.create_trigger(
+            self.check_fit_for_all_labels)
 
     def copy_label_to_test_label(self, label, style):
         test_label = self._test_label
