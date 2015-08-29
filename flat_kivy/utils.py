@@ -17,6 +17,13 @@ def construct_target_file_name(target_file_name, pyfile):
     return path.join(path.dirname(path.abspath(pyfile)), target_file_name)
 
 
+def construct_data_resource(res_path):
+    path_to_this_file = path.abspath(__file__)
+    data_path = path.join(path.dirname(path_to_this_file),
+                          'data')
+    return path.join(data_path, res_path)
+
+
 def get_icon_char(icon):
     if icon != '':
         try:
